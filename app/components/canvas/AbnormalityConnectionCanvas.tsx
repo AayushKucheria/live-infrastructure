@@ -395,13 +395,13 @@ export default function AbnormalityConnectionCanvas({
             <div className="absolute bottom-8 right-8 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
                 <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-2xl border border-zinc-200 dark:border-zinc-700 flex flex-col gap-3 w-[300px]">
                     <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-50 border-b border-zinc-100 dark:border-zinc-700 pb-2">
-                        Selected Threat
+                        Selected Abnormality
                     </h3>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
                         {selectedNode.data.description}
                     </p>
                     <Link
-                        href={`/threat/${mainThreat.id}/communicate?target=${selectedNode.id}`}
+                        href={`/abnormality/${mainAbnormality.id}/communicate?target=${selectedNode.id}`}
                         className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                     >
                         <span>💬</span>

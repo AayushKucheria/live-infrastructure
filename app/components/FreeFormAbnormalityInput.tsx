@@ -35,7 +35,7 @@ export default function FreeFormAbnormalityInput({
   onStructuredDataChange,
   onSuggestionsChange,
   privacyLevel
-}: FreeFormThreatInputProps) {
+}: FreeFormAbnormalityInputProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
