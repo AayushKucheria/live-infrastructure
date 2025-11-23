@@ -116,7 +116,7 @@ LOW PRIVACY: Full details including specific locations, technical findings, samp
 
 The user has selected: ${privacyLevel.toUpperCase()} privacy level.
 
-Organize the following threat data into these three levels. Return JSON with "high", "medium", and "low" keys, each containing the appropriate content for that privacy level.`;
+Organize the following abnormality data into these three levels. Return JSON with "high", "medium", and "low" keys, each containing the appropriate content for that privacy level.`;
 
   const dataSummary = `
 Description: ${structuredData.description}
@@ -177,7 +177,7 @@ ${structuredData.geneticMarkers?.length ? `Genetic Markers: ${structuredData.gen
  */
 export async function generateSuggestions(
   freeformText: string,
-  structuredData: StructuredThreatData
+  structuredData: StructuredAbnormalityData
 ): Promise<AISuggestion[]> {
   const systemPrompt = `You are helping a researcher create an abnormality bubble report. Generate 2-4 subtle, helpful suggestions about what information might be useful to add.
 
@@ -224,7 +224,7 @@ Return JSON array with objects: { "text": "suggestion text", "category": "detect
 export async function integrateClarifications(
   structuredData: StructuredAbnormalityData,
   clarifications: Array<{ section: string; content: string }>
-): Promise<StructuredThreatData> {
+): Promise<StructuredAbnormalityData> {
   if (clarifications.length === 0) {
     return structuredData;
   }

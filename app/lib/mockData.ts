@@ -95,7 +95,7 @@ export function normalizeLabId(labId: string): string {
 export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
   // UK Health Security Agency (UKHSA) - 5 bubbles
   {
-    id: 'threat-uk-1',
+    id: 'abnormality-uk-1',
     labId: 'uk-ukhsa',
     description: 'Unusual genetic markers detected in respiratory samples',
     location: 'United Kingdom',
@@ -110,7 +110,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     geneticMarkers: ['MUT-2024-001', 'MUT-2024-002']
   },
   {
-    id: 'threat-uk-2',
+    id: 'abnormality-uk-2',
     labId: 'uk-ukhsa',
     description: 'Wastewater surveillance detects elevated pathogen levels in Manchester area',
     location: 'Manchester, United Kingdom',
@@ -124,7 +124,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 12
   },
   {
-    id: 'threat-uk-3',
+    id: 'abnormality-uk-3',
     labId: 'uk-ukhsa',
     description: 'Hospital outbreak monitoring flags unusual cluster in Birmingham',
     location: 'Birmingham, United Kingdom',
@@ -138,7 +138,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 18
   },
   {
-    id: 'threat-uk-4',
+    id: 'abnormality-uk-4',
     labId: 'uk-ukhsa',
     description: 'Environmental monitoring detects biological anomalies in Scottish Highlands',
     location: 'Scotland, United Kingdom',
@@ -150,7 +150,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     detailedFindings: 'Air quality sensors in remote monitoring stations detecting unusual particulate matter with biological signatures. May be natural variation, monitoring continues.'
   },
   {
-    id: 'threat-uk-5',
+    id: 'abnormality-uk-5',
     labId: 'uk-ukhsa',
     description: 'Clinical surveillance identifies atypical presentation pattern in Wales',
     location: 'Wales, United Kingdom',
@@ -166,7 +166,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
 
   // US Centers for Disease Control and Prevention (CDC) - 6 bubbles
   {
-    id: 'threat-us-1',
+    id: 'abnormality-us-1',
     labId: 'us-cdc',
     description: 'Wastewater surveillance shows elevated pathogen markers in New York City',
     location: 'New York, USA',
@@ -181,7 +181,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     geneticMarkers: ['NYC-2024-ALPHA', 'NYC-2024-BETA']
   },
   {
-    id: 'threat-us-2',
+    id: 'abnormality-us-2',
     labId: 'us-cdc',
     description: 'Airport screening detects unusual respiratory patterns in travelers from multiple regions',
     location: 'California, USA',
@@ -193,7 +193,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     detailedFindings: 'LAX and SFO screening stations flagging increased respiratory symptoms in arriving passengers. Pattern suggests possible emerging concern, but no confirmed cases yet.'
   },
   {
-    id: 'threat-us-3',
+    id: 'abnormality-us-3',
     labId: 'us-cdc',
     description: 'Genomic sequencing reveals novel variant in Texas hospital samples',
     location: 'Texas, USA',
@@ -208,7 +208,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     geneticMarkers: ['TEX-2024-NOVEL-1', 'TEX-2024-NOVEL-2']
   },
   {
-    id: 'threat-us-4',
+    id: 'abnormality-us-4',
     labId: 'us-cdc',
     description: 'Clinical surveillance network reports unusual cluster in Florida',
     location: 'Florida, USA',
@@ -222,7 +222,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 28
   },
   {
-    id: 'threat-us-5',
+    id: 'abnormality-us-5',
     labId: 'us-cdc',
     description: 'Environmental monitoring detects biological signatures in Pacific Northwest',
     location: 'Washington, USA',
@@ -234,7 +234,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     detailedFindings: 'Environmental sensors in Seattle area detecting unusual biological particulate matter. Correlation with local health data inconclusive. Monitoring ongoing.'
   },
   {
-    id: 'threat-us-6',
+    id: 'abnormality-us-6',
     labId: 'us-cdc',
     description: 'Hospital outbreak monitoring flags cluster in Chicago area',
     location: 'Illinois, USA',
@@ -250,7 +250,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
 
   // National Centre for Infectious Diseases, Singapore (NCID) - 4 bubbles
   {
-    id: 'threat-sg-1',
+    id: 'abnormality-sg-1',
     labId: 'singapore-ncid',
     description: 'Anomalous respiratory patterns in airport screening',
     location: 'Southeast Asia region',
@@ -262,7 +262,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     detailedFindings: 'Changi Airport screening stations detecting elevated respiratory symptom rates in arriving passengers from multiple Southeast Asian countries.'
   },
   {
-    id: 'threat-sg-2',
+    id: 'abnormality-sg-2',
     labId: 'singapore-ncid',
     description: 'Wastewater surveillance detects unusual markers in Jurong district',
     location: 'Singapore',
@@ -276,7 +276,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 8
   },
   {
-    id: 'threat-sg-3',
+    id: 'abnormality-sg-3',
     labId: 'singapore-ncid',
     description: 'Clinical surveillance identifies unusual pattern in port area',
     location: 'Singapore',
@@ -290,7 +290,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 15
   },
   {
-    id: 'threat-sg-4',
+    id: 'abnormality-sg-4',
     labId: 'singapore-ncid',
     description: 'Genomic sequencing reveals markers in samples from multiple districts',
     location: 'Singapore',
@@ -307,7 +307,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
 
   // Fiocruz, Brazil - 5 bubbles
   {
-    id: 'threat-br-1',
+    id: 'abnormality-br-1',
     labId: 'brazil-fiocruz',
     description: 'Atypical pneumonia cases with unknown etiology',
     location: 'South America',
@@ -321,7 +321,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 23
   },
   {
-    id: 'threat-br-2',
+    id: 'abnormality-br-2',
     labId: 'brazil-fiocruz',
     description: 'Wastewater surveillance detects elevated levels in Rio de Janeiro',
     location: 'Rio de Janeiro, Brazil',
@@ -335,7 +335,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 18
   },
   {
-    id: 'threat-br-3',
+    id: 'abnormality-br-3',
     labId: 'brazil-fiocruz',
     description: 'Hospital outbreak monitoring flags cluster in Amazon region',
     location: 'Amazonas, Brazil',
@@ -349,7 +349,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     sampleCount: 14
   },
   {
-    id: 'threat-br-4',
+    id: 'abnormality-br-4',
     labId: 'brazil-fiocruz',
     description: 'Genomic sequencing identifies novel variant in samples from multiple states',
     location: 'Brazil',
@@ -364,7 +364,7 @@ export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
     geneticMarkers: ['BR-2024-VAR-1', 'BR-2024-VAR-2', 'BR-2024-VAR-3']
   },
   {
-    id: 'threat-br-5',
+    id: 'abnormality-br-5',
     labId: 'brazil-fiocruz',
     description: 'Environmental monitoring detects unusual patterns in coastal regions',
     location: 'Bahia, Brazil',
