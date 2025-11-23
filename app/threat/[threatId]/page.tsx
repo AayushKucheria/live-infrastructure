@@ -15,6 +15,7 @@ export default function ThreatBubbleView() {
   const threatId = params.threatId as string;
   const [threatBubble, setThreatBubble] = useState<ThreatBubble | null>(null);
   const [relevantBubbles, setRelevantBubbles] = useState<ThreatBubble[]>([]);
+  const [explanations, setExplanations] = useState<Record<string, string>>({});
   const [currentLabId, setCurrentLabId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,6 +39,40 @@ export default function ThreatBubbleView() {
     const allBubbles = getAllThreatBubbles();
     const relevant = findRelevantThreatBubbles(bubble as ThreatBubble, allBubbles, 5);
     setRelevantBubbles(relevant as ThreatBubble[]);
+
+    // Fetch explanations for relevant bubbles
+    const fetchExplanations = async () => {
+      const newExplanations: Record<string, string> = {};
+      
+      // Process in parallel
+      await Promise.all(relevant.map(async (matchedBubble) => {
+        try {
+          const response = await fetch('/api/openrouter/explain-match', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              sourceThreat: bubble,
+              matchedThreat: matchedBubble,
+            }),
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.explanation) {
+              newExplanations[matchedBubble.id] = data.explanation;
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to fetch explanation for ${matchedBubble.id}`, error);
+        }
+      }));
+      
+      setExplanations(newExplanations);
+    };
+
+    fetchExplanations();
   }, [threatId, router]);
 
   if (!threatBubble) {
@@ -113,6 +148,16 @@ export default function ThreatBubbleView() {
                           </span>
                         </div>
                       </Link>
+                      {explanations[bubble.id] && (
+                        <details className="mt-2 group">
+                          <summary className="cursor-pointer text-xs font-medium text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 select-none">
+                            <span className="transform group-open:rotate-90 transition-transform">▶</span> Relevance Analysis
+                          </summary>
+                          <div className="mt-1 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 dark:border-blue-800/30 text-xs text-blue-800 dark:text-blue-300 animate-in fade-in duration-200">
+                            {explanations[bubble.id]}
+                          </div>
+                        </details>
+                      )}
                     </div>
                   ))}
                 </div>
