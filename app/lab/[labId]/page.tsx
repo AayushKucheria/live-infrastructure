@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getLabById, MOCK_ABNORMALITY_BUBBLES } from '../../lib/mockData';
-import { getCurrentLab, getAbnormalityBubbles } from '../../lib/storage';
+import { getCurrentLab, getAbnormalityBubbles, deleteAbnormalityBubble } from '../../lib/storage';
 import AbnormalityBubbleCard from '../../components/AbnormalityBubbleCard';
 import Link from 'next/link';
 import { PRIMARY_LAB_ID } from '../../lib/constants';
@@ -14,6 +14,23 @@ export default function LabDashboard() {
   const labId = params.labId as string;
   const [lab, setLab] = useState(getLabById(labId));
   const [allAbnormalityBubbles, setAllAbnormalityBubbles] = useState<any[]>([]);
+  const [userCreatedBubbleIds, setUserCreatedBubbleIds] = useState<Set<string>>(new Set());
+
+  const loadBubbles = () => {
+    // Load user's abnormality bubbles from localStorage
+    const userBubbles = getAbnormalityBubbles().filter(b => b.labId === labId);
+    
+    // Load predefined mock abnormality bubbles for this lab
+    const mockBubbles = MOCK_ABNORMALITY_BUBBLES.filter(b => b.labId === labId);
+    
+    // Track which bubbles are user-created
+    const userCreatedIds = new Set(userBubbles.map(b => b.id));
+    setUserCreatedBubbleIds(userCreatedIds);
+    
+    // Combine both arrays
+    const allBubbles = [...userBubbles, ...mockBubbles];
+    setAllAbnormalityBubbles(allBubbles);
+  };
 
   useEffect(() => {
     if (labId !== PRIMARY_LAB_ID) {
@@ -35,17 +52,32 @@ export default function LabDashboard() {
     }
 
     setLab(labData);
-    
-    // Load user's abnormality bubbles from localStorage
-    const userBubbles = getAbnormalityBubbles().filter(b => b.labId === labId);
-    
-    // Load predefined mock abnormality bubbles for this lab
-    const mockBubbles = MOCK_ABNORMALITY_BUBBLES.filter(b => b.labId === labId);
-    
-    // Combine both arrays
-    const allBubbles = [...userBubbles, ...mockBubbles];
-    setAllAbnormalityBubbles(allBubbles);
+    loadBubbles();
   }, [labId, router]);
+
+  const handleDelete = (bubbleId: string) => {
+    // Prevent deletion of mock bubbles
+    const isMockBubble = MOCK_ABNORMALITY_BUBBLES.some(b => b.id === bubbleId);
+    if (isMockBubble) {
+      return;
+    }
+
+    // Verify it's a user-created bubble owned by current lab
+    if (!userCreatedBubbleIds.has(bubbleId)) {
+      return;
+    }
+
+    // Delete from storage
+    deleteAbnormalityBubble(bubbleId);
+    
+    // Update state locally - remove the bubble from the list
+    setAllAbnormalityBubbles(prev => prev.filter(b => b.id !== bubbleId));
+    setUserCreatedBubbleIds(prev => {
+      const next = new Set(prev);
+      next.delete(bubbleId);
+      return next;
+    });
+  };
 
   if (!lab) {
     return null;
@@ -96,9 +128,20 @@ export default function LabDashboard() {
               Abnormality Bubbles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {allAbnormalityBubbles.map((bubble) => (
-                <AbnormalityBubbleCard key={bubble.id} bubble={bubble} showFullDetails />
-              ))}
+              {allAbnormalityBubbles.map((bubble) => {
+                const isUserCreated = userCreatedBubbleIds.has(bubble.id);
+                const canDelete = isUserCreated && bubble.labId === labId;
+                return (
+                  <AbnormalityBubbleCard 
+                    key={bubble.id} 
+                    bubble={bubble} 
+                    showFullDetails 
+                    canDelete={canDelete}
+                    isUserCreated={isUserCreated}
+                    onDelete={() => handleDelete(bubble.id)}
+                  />
+                );
+              })}
             </div>
           </div>
         )}
