@@ -14,6 +14,14 @@ Live coordination infrastructure that enables:
 - **Decentralized coordination** (no central authority)
 - **Just-in-time structure** generation (not rigid protocols)
 
+## Current Features (Draft One)
+
+- **Lab Selection**: Join as one of 5 mock research labs with predefined situations
+- **Threat Bubble Creation**: Share threat information with configurable privacy levels (high/medium/low)
+- **Relevance Matching**: Automatically find related threat bubbles from other labs
+- **Communication Channels**: Request information, send information, or set up conditional information flows
+- **Privacy Filtering**: Details shown/hidden based on selected privacy level
+
 ## Design Philosophy
 
 This project embodies "Live Machinery" design principles:

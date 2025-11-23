@@ -65,13 +65,25 @@ Each has pieces valuable to others, but also reasons to be cautious. The system 
 
 ```
 live-infrastructure/
-├── app/              # Next.js app directory
-├── docs/             # Project documentation
-│   ├── specifics.md           # Core problem and solution
-│   ├── product_focus.md       # Hackathon context
-│   └── design_guidelines.md   # Live Machinery philosophy
-├── agent.md          # This file - agent context
-└── README.md         # Project setup
+├── app/                      # Next.js app directory
+│   ├── components/           # React components
+│   │   ├── LabSelector.tsx
+│   │   ├── ThreatBubbleCard.tsx
+│   │   ├── ThreatBubbleForm.tsx
+│   │   └── CommunicationChannel.tsx
+│   ├── lab/[labId]/         # Lab dashboard routes
+│   ├── threat/[threatId]/   # Threat bubble routes
+│   └── lib/                  # Utilities
+│       ├── mockData.ts       # Mock labs and threat bubbles
+│       ├── storage.ts        # localStorage utilities
+│       └── matching.ts       # Relevance matching algorithm
+├── docs/                     # Project documentation
+│   ├── specifics.md          # Core problem and solution
+│   ├── product_focus.md      # Hackathon context
+│   ├── design_guidelines.md  # Live Machinery philosophy
+│   └── architecture.md       # Architecture and implementation details
+├── agent.md                  # This file - agent context
+└── README.md                 # Project setup
 ```
 
 ## Key Documents
@@ -90,5 +102,16 @@ live-infrastructure/
 
 ## Current Status
 
-Prototype stage - building draft one interface for coordination between research labs.
+**Draft One Complete** - Core features implemented:
+
+- ✅ Lab selection interface (5 mock labs with predefined situations)
+- ✅ Threat bubble creation with privacy levels (high/medium/low)
+- ✅ Threat bubble viewing with relevance matching
+- ✅ Communication channels (request/send/conditional flows)
+- ✅ Client-side storage (localStorage)
+- ✅ Simple relevance matching algorithm
+
+The prototype demonstrates the core coordination flow: labs can create threat bubbles, view relevant bubbles from other labs, and initiate communication channels. Privacy levels control information visibility. All data is stored client-side for the draft version.
+
+See `docs/architecture.md` for detailed implementation status and future enhancements.
 
