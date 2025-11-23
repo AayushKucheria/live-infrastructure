@@ -11,12 +11,13 @@ import AbnormalityBubbleCard from '../AbnormalityBubbleCard';
 import MagicNode from './MagicNode';
 import DraggableAbnormalityCard from './DraggableAbnormalityCard';
 import FloatingDock from './FloatingDock';
+import SuggestedBubbleCard from './SuggestedBubbleCard';
 
 type AbnormalityBubbleUnion = AbnormalityBubble | StoredAbnormalityBubble;
 
 interface AbnormalityConnectionCanvasProps {
   mainAbnormality: AbnormalityBubbleUnion;
-  initialRelevantAbnormalities: AbnormalityBubbleUnion[];
+  suggestedAbnormalities: AbnormalityBubbleUnion[];
   libraryAbnormalities: AbnormalityBubbleUnion[];
   onAnalyze: (source: AbnormalityBubbleUnion, target: AbnormalityBubbleUnion) => Promise<string>;
 }
@@ -107,7 +108,7 @@ function CanvasArea({ children }: { children: React.ReactNode }) {
 
 export default function AbnormalityConnectionCanvas({
   mainAbnormality,
-  initialRelevantAbnormalities,
+  suggestedAbnormalities: initialSuggestedAbnormalities,
   libraryAbnormalities: initialLibraryAbnormalities,
   onAnalyze
 }: AbnormalityConnectionCanvasProps) {
@@ -121,6 +122,9 @@ export default function AbnormalityConnectionCanvas({
   
   // Canvas Nodes State
   const [nodes, setNodes] = useState<CanvasNode[]>([]);
+  
+  // Suggested bubbles state (track which are still visible)
+  const [suggestedBubbles, setSuggestedBubbles] = useState<AbnormalityBubbleUnion[]>(initialSuggestedAbnormalities);
 
   // Ref for TransformWrapper to access scale/position
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
@@ -134,7 +138,7 @@ export default function AbnormalityConnectionCanvas({
     })
   );
 
-  // Initialize Nodes
+  // Initialize Nodes - start with only main and magic node
   useEffect(() => {
     const centerX = 1500; // Middle of 3000px canvas
     const centerY = 1500;
@@ -144,21 +148,8 @@ export default function AbnormalityConnectionCanvas({
       { id: 'magic-node', type: 'magic', x: centerX, y: centerY },
     ];
 
-    // Position initial relevant abnormalities
-    initialRelevantAbnormalities.forEach((abnormality, index) => {
-      const angle = (index - (initialRelevantAbnormalities.length - 1) / 2) * 0.6; // Spread in radians
-      const radius = 500;
-      initialNodes.push({
-        id: abnormality.id,
-        type: 'abnormality',
-        x: centerX + 500, // Base X offset
-        y: centerY + (index - (initialRelevantAbnormalities.length - 1) / 2) * 350, // Vertical stack spread
-        data: abnormality,
-      });
-    });
-
     setNodes(initialNodes);
-  }, []);
+  }, [mainAbnormality]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -302,6 +293,39 @@ export default function AbnormalityConnectionCanvas({
     }
   };
 
+  const handleAcceptSuggestion = async (bubble: AbnormalityBubbleUnion) => {
+    // Remove from suggestions
+    setSuggestedBubbles(prev => prev.filter(b => b.id !== bubble.id));
+    
+    // Add to canvas
+    const centerX = 1500;
+    const centerY = 1500;
+    const existingAbnormalityNodes = nodes.filter(n => n.type === 'abnormality');
+    const newNode: CanvasNode = {
+      id: bubble.id,
+      type: 'abnormality',
+      x: centerX + 500,
+      y: centerY + (existingAbnormalityNodes.length - (existingAbnormalityNodes.length - 1) / 2) * 350,
+      data: bubble
+    };
+
+    setNodes(prev => [...prev, newNode]);
+    setSelectedNodeId(bubble.id);
+
+    // Analyze the accepted suggestion
+    try {
+      const explanation = await onAnalyze(mainAbnormality, bubble);
+      setExplanations(prev => ({ ...prev, [bubble.id]: explanation }));
+    } catch (error) {
+      console.error("Analysis failed", error);
+    }
+  };
+
+  const handleDismissSuggestion = (bubble: AbnormalityBubbleUnion) => {
+    // Remove from suggestions
+    setSuggestedBubbles(prev => prev.filter(b => b.id !== bubble.id));
+  };
+
   const activeLibraryAbnormality = libraryAbnormalities.find(t => t.id === activeId);
   const activeCanvasNode = nodes.find(n => n.id === activeId);
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
@@ -417,6 +441,28 @@ export default function AbnormalityConnectionCanvas({
             </div>
           </TransformComponent>
         </TransformWrapper>
+        
+        {/* Suggestion Area - Floating near magic node */}
+        {suggestedBubbles.length > 0 && (
+          <div className="absolute top-20 right-8 z-50 max-w-md">
+            <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-2xl border border-indigo-200 dark:border-indigo-800 p-4">
+              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">✨ AI Suggestions</span>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">({suggestedBubbles.length})</span>
+              </div>
+              <div className="space-y-3">
+                {suggestedBubbles.map((bubble) => (
+                  <SuggestedBubbleCard
+                    key={bubble.id}
+                    bubble={bubble}
+                    onAccept={() => handleAcceptSuggestion(bubble)}
+                    onDismiss={() => handleDismissSuggestion(bubble)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
         
         <FloatingDock abnormalities={libraryAbnormalities} mainAbnormality={mainAbnormality} />
 

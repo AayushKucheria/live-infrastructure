@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getAbnormalityBubbleById } from '../../lib/storage';
 import { MOCK_ABNORMALITY_BUBBLES } from '../../lib/mockData';
-import { findRelevantAbnormalityBubbles, getAllAbnormalityBubbles, AbnormalityBubbleUnion } from '../../lib/matching';
+import { getAllAbnormalityBubbles, AbnormalityBubbleUnion } from '../../lib/matching';
 import AbnormalityConnectionCanvas from '../../components/canvas/AbnormalityConnectionCanvas';
 import { getCurrentLab } from '../../lib/storage';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ export default function AbnormalityBubbleView() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<{
     mainAbnormality: AbnormalityBubbleUnion;
-    initialRelevantAbnormalities: AbnormalityBubbleUnion[];
+    suggestedAbnormalities: AbnormalityBubbleUnion[];
     libraryAbnormalities: AbnormalityBubbleUnion[];
   } | null>(null);
   
@@ -44,19 +44,41 @@ export default function AbnormalityBubbleView() {
         }
 
         const allBubbles = getAllAbnormalityBubbles();
-        // Find relevant bubbles (limit 5 initially)
-        const initialRelevant = findRelevantAbnormalityBubbles(mainAbnormality, allBubbles, 5);
         
-        // Calculate library bubbles (Everything else)
-        // Filter out main abnormality and already relevant abnormalities
-        const relevantIds = new Set(initialRelevant.map(b => b.id));
+        // Use AI to find relevant bubbles (2-3 suggestions)
+        let suggestedBubbles: AbnormalityBubbleUnion[] = [];
+        try {
+          const response = await fetch('/api/openrouter/find-relevant-bubbles', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              sourceAbnormality: mainAbnormality,
+              candidateBubbles: allBubbles,
+              limit: 3
+            }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.relevantBubbles) {
+              suggestedBubbles = result.relevantBubbles.map((item: { bubble: AbnormalityBubbleUnion }) => item.bubble);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching AI suggestions:', error);
+        }
+        
+        // Calculate library bubbles (Everything except main abnormality)
+        // Don't filter out suggestions - they'll be shown separately
         const libraryAbnormalities = allBubbles.filter(b => 
-            b.id !== mainAbnormality.id && !relevantIds.has(b.id)
+            b.id !== mainAbnormality.id
         );
 
         setData({
             mainAbnormality,
-            initialRelevantAbnormalities: initialRelevant,
+            suggestedAbnormalities: suggestedBubbles,
             libraryAbnormalities
         });
         setIsLoading(false);
@@ -128,7 +150,7 @@ export default function AbnormalityBubbleView() {
       <div className="flex-1 overflow-hidden">
         <AbnormalityConnectionCanvas
           mainAbnormality={data.mainAbnormality}
-          initialRelevantAbnormalities={data.initialRelevantAbnormalities}
+          suggestedAbnormalities={data.suggestedAbnormalities}
           libraryAbnormalities={data.libraryAbnormalities}
           onAnalyze={handleAnalyze}
         />
