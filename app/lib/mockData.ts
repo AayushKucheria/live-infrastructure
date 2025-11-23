@@ -42,39 +42,39 @@ export interface CommunicationChannel {
 // Mock labs with predefined situations
 export const MOCK_LABS: Lab[] = [
   {
-    id: 'indian-biotech',
-    name: 'Indian Biotech Lab',
+    id: 'india-niv',
+    name: 'National Institute of Virology (NIV)',
     situation: 'Detected unusual pattern in local wastewater samples - possible novel pathogen, but not sure, don\'t want to cause panic',
-    location: 'Mumbai, India',
-    type: 'Biotechnology Research'
+    location: 'Pune, India',
+    type: 'National Biosecurity Agency'
   },
   {
-    id: 'uk-nhs-genomics',
-    name: 'UK NHS Genomics',
+    id: 'uk-ukhsa',
+    name: 'UK Health Security Agency (UKHSA)',
     situation: 'Has seen similar genetic markers in respiratory illness cases, but assumed it was flu variant',
     location: 'London, UK',
-    type: 'Genomics Research'
+    type: 'National Public Health Agency'
   },
   {
     id: 'us-cdc',
-    name: 'US CDC',
+    name: 'US Centers for Disease Control and Prevention (CDC)',
     situation: 'Has modeling suggesting something should be emerging but no concrete data',
     location: 'Atlanta, USA',
-    type: 'Public Health Agency'
+    type: 'National Public Health Agency'
   },
   {
-    id: 'singapore-biosurveillance',
-    name: 'Singapore Biosurveillance Unit',
+    id: 'singapore-ncid',
+    name: 'National Centre for Infectious Diseases (NCID)',
     situation: 'Airport screening detected unusual respiratory patterns in travelers from Southeast Asia',
     location: 'Singapore',
-    type: 'Biosurveillance'
+    type: 'National Infectious Disease Center'
   },
   {
-    id: 'brazil-clinical',
-    name: 'Brazil Clinical Research Lab',
+    id: 'brazil-fiocruz',
+    name: 'Fiocruz - Oswaldo Cruz Foundation',
     situation: 'Hospital network reporting increased cases of atypical pneumonia with unknown etiology',
-    location: 'São Paulo, Brazil',
-    type: 'Clinical Research'
+    location: 'Rio de Janeiro, Brazil',
+    type: 'National Health Research Institute'
   }
 ];
 
@@ -82,7 +82,7 @@ export const MOCK_LABS: Lab[] = [
 export const MOCK_THREAT_BUBBLES: ThreatBubble[] = [
   {
     id: 'threat-1',
-    labId: 'uk-nhs-genomics',
+    labId: 'uk-ukhsa',
     description: 'Unusual genetic markers detected in respiratory samples',
     location: 'United Kingdom',
     detectionMethod: 'Genomic sequencing',
@@ -97,7 +97,7 @@ export const MOCK_THREAT_BUBBLES: ThreatBubble[] = [
   },
   {
     id: 'threat-2',
-    labId: 'singapore-biosurveillance',
+    labId: 'singapore-ncid',
     description: 'Anomalous respiratory patterns in airport screening',
     location: 'Southeast Asia region',
     detectionMethod: 'Airport screening data',
@@ -108,7 +108,7 @@ export const MOCK_THREAT_BUBBLES: ThreatBubble[] = [
   },
   {
     id: 'threat-3',
-    labId: 'brazil-clinical',
+    labId: 'brazil-fiocruz',
     description: 'Atypical pneumonia cases with unknown etiology',
     location: 'South America',
     detectionMethod: 'Clinical surveillance',
