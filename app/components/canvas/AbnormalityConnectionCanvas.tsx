@@ -94,7 +94,7 @@ function CanvasArea({ children }: { children: React.ReactNode }) {
   return (
     <div
       ref={setNodeRef}
-      className="min-w-[4000px] min-h-[4000px] bg-zinc-50 dark:bg-zinc-900 relative"
+      className="min-w-[3000px] min-h-[3000px] relative"
       style={{
         backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)',
         backgroundSize: '40px 40px',
@@ -136,8 +136,8 @@ export default function AbnormalityConnectionCanvas({
 
   // Initialize Nodes
   useEffect(() => {
-    const centerX = 2000; // Middle of 4000px canvas
-    const centerY = 2000;
+    const centerX = 1500; // Middle of 3000px canvas
+    const centerY = 1500;
 
     const initialNodes: CanvasNode[] = [
       { id: 'main-abnormality', type: 'main', x: centerX - 600, y: centerY - 200, data: mainAbnormality },
@@ -294,7 +294,7 @@ export default function AbnormalityConnectionCanvas({
   const abnormalityNodes = getAbnormalityNodes();
 
   return (
-    <div className="h-full w-full relative overflow-hidden bg-zinc-900">
+    <div className="h-full w-full relative overflow-hidden bg-transparent">
       <DndContext 
         sensors={sensors}
         onDragStart={handleDragStart} 
@@ -302,14 +302,21 @@ export default function AbnormalityConnectionCanvas({
       >
         <TransformWrapper
           ref={transformRef}
-          initialScale={0.6}
+          initialScale={0.9}
           minScale={0.2}
           maxScale={2}
           limitToBounds={false}
-          centerOnInit={true}
-          initialPositionX={-1000}
-          initialPositionY={-1000}
+          centerOnInit={false}
+          initialPositionX={-750}
+          initialPositionY={-750}
           panning={{ excluded: ['draggable-node', 'magic-btn'] }}
+          wheel={{ 
+            step: 1,
+            wheelDisabled: false,
+            touchPadDisabled: false,
+            activationKeys: []
+          }}
+          doubleClick={{ disabled: true }}
         >
           <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>
             <div onClick={handleCanvasClick}>
