@@ -67,7 +67,7 @@ live-infrastructure/
 ### ✅ Implemented Features (Draft One)
 
 #### Core Functionality
-- [x] **Lab Selection**: Users can join as one of 5 mock labs with predefined situations
+- [x] **Lab Selection**: Users can join as one of 5 national biosecurity agencies with predefined situations
 - [x] **Threat Bubble Creation**: Form-based creation with privacy levels (high/medium/low)
 - [x] **Privacy Filtering**: Details shown/hidden based on selected privacy level
 - [x] **Threat Bubble Feed**: View created bubbles and relevant bubbles from other labs
@@ -106,10 +106,17 @@ live-infrastructure/
 ## Key Features Overview
 
 ### Lab Selection Flow
-1. User lands on homepage and sees 5 mock labs
-2. Each lab has a predefined situation (e.g., "Detected unusual pattern in wastewater")
-3. User selects a lab to "join as" (stored in localStorage)
+1. User lands on homepage and sees 5 national biosecurity agencies
+2. Each agency has a predefined situation (e.g., "Detected unusual pattern in wastewater")
+3. User selects an agency to "join as" (stored in localStorage)
 4. Redirects to lab dashboard
+
+### Available Labs (National Biosecurity Agencies)
+- **india-niv**: National Institute of Virology (NIV) - Pune, India - National Biosecurity Agency
+- **uk-ukhsa**: UK Health Security Agency (UKHSA) - London, UK - National Public Health Agency
+- **us-cdc**: US Centers for Disease Control and Prevention (CDC) - Atlanta, USA - National Public Health Agency
+- **singapore-ncid**: National Centre for Infectious Diseases (NCID) - Singapore - National Infectious Disease Center
+- **brazil-fiocruz**: Fiocruz - Oswaldo Cruz Foundation - Rio de Janeiro, Brazil - National Health Research Institute
 
 ### Threat Bubble Creation
 1. From lab dashboard, user can create a threat bubble

@@ -16,7 +16,12 @@ Live coordination infrastructure that enables:
 
 ## Current Features (Draft One)
 
-- **Lab Selection**: Join as one of 5 mock research labs with predefined situations
+- **Lab Selection**: Join as one of 5 national biosecurity agencies with predefined situations:
+  - National Institute of Virology (NIV) - India
+  - UK Health Security Agency (UKHSA) - United Kingdom
+  - US Centers for Disease Control and Prevention (CDC) - United States
+  - National Centre for Infectious Diseases (NCID) - Singapore
+  - Fiocruz - Oswaldo Cruz Foundation - Brazil
 - **Threat Bubble Creation**: Share threat information with configurable privacy levels (high/medium/low)
 - **Relevance Matching**: Automatically find related threat bubbles from other labs
 - **Communication Channels**: Request information, send information, or set up conditional information flows
