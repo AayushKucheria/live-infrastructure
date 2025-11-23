@@ -125,6 +125,20 @@ export function getAbnormalityBubbleById(id: string): StoredAbnormalityBubble | 
   return getAbnormalityBubbles().find(b => b.id === id);
 }
 
+export function deleteAbnormalityBubble(id: string): void {
+  if (typeof window !== 'undefined') {
+    // Remove the abnormality bubble
+    const existing = getAbnormalityBubbles();
+    const updated = existing.filter(b => b.id !== id);
+    localStorage.setItem(STORAGE_KEYS.ABNORMALITY_BUBBLES, JSON.stringify(updated));
+    
+    // Delete all associated communication channels
+    const channels = getCommunicationChannels();
+    const updatedChannels = channels.filter(c => c.abnormalityBubbleId !== id);
+    localStorage.setItem(STORAGE_KEYS.COMMUNICATION_CHANNELS, JSON.stringify(updatedChannels));
+  }
+}
+
 // Communication channels storage
 export function saveCommunicationChannel(channel: StoredCommunicationChannel): void {
   if (typeof window !== 'undefined') {

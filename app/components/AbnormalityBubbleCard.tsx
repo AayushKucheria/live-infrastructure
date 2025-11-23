@@ -16,9 +16,12 @@ interface AbnormalityBubbleCardProps {
   isSelected?: boolean;
   onClick?: () => void;
   onCommunicate?: () => void;
+  onDelete?: () => void;
+  canDelete?: boolean;
+  isUserCreated?: boolean;
 }
 
-export default function AbnormalityBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate }: AbnormalityBubbleCardProps) {
+export default function AbnormalityBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate, onDelete, canDelete = false }: AbnormalityBubbleCardProps) {
   const lab = getLabById(bubble.labId);
   
   // Debug: Log when lab is not found
@@ -54,6 +57,23 @@ export default function AbnormalityBubbleCard({ bubble, showFullDetails = false,
             }
         `}
     >
+      {/* Delete button - top right */}
+      {canDelete && onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onDelete();
+          }}
+          className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors z-10"
+          title="Delete"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+      
       {/* Primary: Abnormality Description */}
       <div className="mb-4">
         <div className="flex items-start justify-between gap-3 mb-2">
