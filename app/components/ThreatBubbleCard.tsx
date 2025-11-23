@@ -13,9 +13,12 @@ interface ThreatBubbleCardProps {
   showFullDetails?: boolean;
   matchExplanation?: string;
   disableLink?: boolean;
+  isSelected?: boolean;
+  onClick?: () => void;
+  onCommunicate?: () => void;
 }
 
-export default function ThreatBubbleCard({ bubble, showFullDetails = false, matchExplanation, disableLink = false }: ThreatBubbleCardProps) {
+export default function ThreatBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate }: ThreatBubbleCardProps) {
   const lab = getLabById(bubble.labId);
   
   const urgencyColors = {
@@ -35,7 +38,17 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, matc
   const canShowMediumDetails = bubble.privacyLevel !== 'high' || showFullDetails;
 
   const content = (
-    <div className={`bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-md transition-all ${!disableLink ? 'cursor-pointer' : ''}`}>
+    <div 
+        onClick={onClick}
+        className={`
+            bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border transition-all relative group
+            ${!disableLink || onClick ? 'cursor-pointer' : ''}
+            ${isSelected 
+                ? 'border-indigo-500 ring-2 ring-indigo-500 dark:ring-indigo-400 shadow-lg scale-[1.02]' 
+                : 'border-zinc-200 dark:border-zinc-700 hover:shadow-md'
+            }
+        `}
+    >
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -58,21 +71,6 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, matc
       <p className="text-zinc-700 dark:text-zinc-300 mb-4">
         {bubble.description}
       </p>
-
-      {matchExplanation && (
-        <div className="mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded border border-indigo-100 dark:border-indigo-800/30 animate-in fade-in slide-in-from-top-1">
-          <div className="flex items-start gap-2">
-            <div>
-              <h4 className="text-xs font-semibold text-indigo-800 dark:text-indigo-300 uppercase tracking-wide mb-1">
-                Why this might be relevant?
-              </h4>
-              <p className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed">
-                {matchExplanation}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="space-y-2 mb-4 text-sm">
         <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
@@ -106,6 +104,19 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, matc
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
           {new Date(bubble.createdAt).toLocaleDateString()}
         </span>
+        
+        {onCommunicate && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onCommunicate();
+            }}
+            className="flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded transition-colors"
+          >
+            <span>💬</span>
+            Communicate
+          </button>
+        )}
       </div>
     </div>
   );
