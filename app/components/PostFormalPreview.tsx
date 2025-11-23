@@ -1,7 +1,21 @@
 'use client';
 
 import { getLabById } from '../lib/mockData';
-import { ThreatBubbleFormData } from '../lab/[labId]/create-threat/page';
+
+// Legacy interface - kept for backward compatibility
+// This component is replaced by PostFormalArtifactEditor
+interface ThreatBubbleFormData {
+  description: string;
+  location: string;
+  detectionMethod: string;
+  timeline: string;
+  urgency: 'low' | 'medium' | 'high';
+  privacyLevel: 'high' | 'medium' | 'low';
+  detailedFindings: string;
+  specificLocation: string;
+  sampleCount: string;
+  geneticMarkers: string;
+}
 import { formatRelativeTimeline } from '../lib/utils';
 
 interface PostFormalPreviewProps {

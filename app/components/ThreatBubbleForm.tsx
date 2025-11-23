@@ -3,7 +3,21 @@
 import { useRouter } from 'next/navigation';
 import { saveThreatBubble } from '../lib/storage';
 import { StoredThreatBubble } from '../lib/storage';
-import { ThreatBubbleFormData } from '../lab/[labId]/create-threat/page';
+
+// Legacy interface - kept for backward compatibility
+// This component is replaced by FreeFormThreatInput + PostFormalArtifactEditor
+interface ThreatBubbleFormData {
+  description: string;
+  location: string;
+  detectionMethod: string;
+  timeline: string;
+  urgency: 'low' | 'medium' | 'high';
+  privacyLevel: 'high' | 'medium' | 'low';
+  detailedFindings: string;
+  specificLocation: string;
+  sampleCount: string;
+  geneticMarkers: string;
+}
 
 interface ThreatBubbleFormProps {
   labId: string;

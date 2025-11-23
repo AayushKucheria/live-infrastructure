@@ -6,6 +6,13 @@ const STORAGE_KEYS = {
   COMMUNICATION_CHANNELS: 'communicationChannels'
 };
 
+export interface ClarificationAnnotation {
+  id: string;
+  section: string; // Which section of the artifact this applies to
+  content: string;
+  createdAt: string;
+}
+
 export interface StoredThreatBubble {
   id: string;
   labId: string;
@@ -20,6 +27,9 @@ export interface StoredThreatBubble {
   specificLocation?: string;
   sampleCount?: number;
   geneticMarkers?: string[];
+  // New fields for AI-driven creation
+  rawFreeformInput?: string; // Original freeform text input
+  clarifications?: ClarificationAnnotation[]; // User-added clarifications
 }
 
 export interface StoredCommunicationChannel {

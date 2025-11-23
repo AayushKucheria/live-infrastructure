@@ -3,21 +3,27 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getLabById } from '../../../lib/mockData';
-import { getCurrentLab } from '../../../lib/storage';
-import ThreatBubbleForm from '../../../components/ThreatBubbleForm';
-import PostFormalPreview from '../../../components/PostFormalPreview';
+import { getCurrentLab, saveThreatBubble, StoredThreatBubble, ClarificationAnnotation } from '../../../lib/storage';
+import FreeFormThreatInput from '../../../components/FreeFormThreatInput';
+import PostFormalArtifactEditor from '../../../components/PostFormalArtifactEditor';
+import AISuggestionBubbles from '../../../components/AISuggestionBubbles';
 
-export interface ThreatBubbleFormData {
+interface StructuredThreatData {
   description: string;
   location: string;
   detectionMethod: string;
   timeline: string;
   urgency: 'low' | 'medium' | 'high';
-  privacyLevel: 'high' | 'medium' | 'low';
-  detailedFindings: string;
-  specificLocation: string;
-  sampleCount: string;
-  geneticMarkers: string;
+  detailedFindings?: string;
+  specificLocation?: string;
+  sampleCount?: number;
+  geneticMarkers?: string[];
+}
+
+interface AISuggestion {
+  text: string;
+  category: string;
+  priority: 'high' | 'medium' | 'low';
 }
 
 export default function CreateThreatBubble() {
@@ -25,18 +31,17 @@ export default function CreateThreatBubble() {
   const router = useRouter();
   const labId = params.labId as string;
   const [lab, setLab] = useState(getLabById(labId));
-  const [formData, setFormData] = useState<ThreatBubbleFormData>({
+  const [freeformText, setFreeformText] = useState('');
+  const [structuredData, setStructuredData] = useState<StructuredThreatData>({
     description: '',
     location: '',
     detectionMethod: '',
     timeline: '',
-    urgency: 'medium',
-    privacyLevel: 'medium',
-    detailedFindings: '',
-    specificLocation: '',
-    sampleCount: '',
-    geneticMarkers: ''
+    urgency: 'medium'
   });
+  const [privacyLevel, setPrivacyLevel] = useState<'high' | 'medium' | 'low'>('medium');
+  const [suggestions, setSuggestions] = useState<AISuggestion[]>([]);
+  const [clarifications, setClarifications] = useState<ClarificationAnnotation[]>([]);
 
   useEffect(() => {
     // Verify user is joined as this lab
@@ -54,6 +59,47 @@ export default function CreateThreatBubble() {
 
     setLab(labData);
   }, [labId, router]);
+
+  const handleSuggestionClick = (suggestionText: string) => {
+    setFreeformText(prev => prev + (prev ? ' ' : '') + suggestionText);
+  };
+
+  const handleClarificationAdd = (section: string, content: string) => {
+    const newClarification: ClarificationAnnotation = {
+      id: `clarification-${Date.now()}`,
+      section,
+      content,
+      createdAt: new Date().toISOString()
+    };
+    setClarifications(prev => [...prev, newClarification]);
+  };
+
+  const handleClarificationRemove = (id: string) => {
+    setClarifications(prev => prev.filter(c => c.id !== id));
+  };
+
+  const handleSave = () => {
+    const bubble: StoredThreatBubble = {
+      id: `threat-${Date.now()}`,
+      labId,
+      description: structuredData.description,
+      location: structuredData.location,
+      detectionMethod: structuredData.detectionMethod,
+      timeline: structuredData.timeline,
+      urgency: structuredData.urgency,
+      privacyLevel,
+      createdAt: new Date().toISOString(),
+      detailedFindings: structuredData.detailedFindings,
+      specificLocation: structuredData.specificLocation,
+      sampleCount: structuredData.sampleCount,
+      geneticMarkers: structuredData.geneticMarkers,
+      rawFreeformInput: freeformText,
+      clarifications: clarifications.length > 0 ? clarifications : undefined
+    };
+
+    saveThreatBubble(bubble);
+    router.push(`/threat/${bubble.id}`);
+  };
 
   if (!lab) {
     return null;
@@ -73,25 +119,75 @@ export default function CreateThreatBubble() {
             Create Threat Bubble
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Share information about a potential threat while controlling privacy levels
+            Describe the threat in your own words. AI will help structure it for sharing.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left column: Form */}
-          <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-            <ThreatBubbleForm 
-              labId={labId} 
-              formData={formData}
-              onFormDataChange={setFormData}
-            />
+          {/* Left column: Freeform Input */}
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  Privacy Level
+                </label>
+                <select
+                  value={privacyLevel}
+                  onChange={(e) => setPrivacyLevel(e.target.value as 'high' | 'medium' | 'low')}
+                  className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="high">High (bare minimum)</option>
+                  <option value="medium">Medium (anonymized details)</option>
+                  <option value="low">Low (full details)</option>
+                </select>
+                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                  {privacyLevel === 'high' && 'Only essential information will be shared'}
+                  {privacyLevel === 'medium' && 'Anonymized details will be included'}
+                  {privacyLevel === 'low' && 'Full details will be shared'}
+                </p>
+              </div>
+
+              <FreeFormThreatInput
+                value={freeformText}
+                onChange={setFreeformText}
+                onStructuredDataChange={setStructuredData}
+                onSuggestionsChange={setSuggestions}
+                privacyLevel={privacyLevel}
+              />
+
+              <AISuggestionBubbles
+                suggestions={suggestions}
+                onSuggestionClick={handleSuggestionClick}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={handleSave}
+                disabled={!structuredData.description}
+                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Create Threat Bubble
+              </button>
+              <button
+                onClick={() => router.back()}
+                className="px-6 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
 
           {/* Right column: Preview */}
           <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)]">
-            <PostFormalPreview 
-              formData={formData}
+            <PostFormalArtifactEditor
+              structuredData={structuredData}
               labId={labId}
+              privacyLevel={privacyLevel}
+              onDataChange={setStructuredData}
+              clarifications={clarifications}
+              onClarificationAdd={handleClarificationAdd}
+              onClarificationRemove={handleClarificationRemove}
             />
           </div>
         </div>
@@ -99,4 +195,3 @@ export default function CreateThreatBubble() {
     </div>
   );
 }
-
