@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { getThreatBubbleById } from '../../../lib/storage';
 import { MOCK_THREAT_BUBBLES, getLabById } from '../../../lib/mockData';
 import CommunicationChannel from '../../../components/CommunicationChannel';
@@ -10,7 +10,13 @@ import { getCurrentLab } from '../../../lib/storage';
 export default function CommunicatePage() {
   const params = useParams();
   const router = useRouter();
-  const threatId = params.threatId as string;
+  const searchParams = useSearchParams();
+  const mainThreatId = params.threatId as string;
+  const targetThreatId = searchParams.get('target');
+  
+  // The actual threat we are communicating about is the target if provided, otherwise the main threat
+  const activeThreatId = targetThreatId || mainThreatId;
+
   const [threatBubble, setThreatBubble] = useState<any>(null);
   const [currentLabId, setCurrentLabId] = useState<string | null>(null);
 
@@ -24,23 +30,26 @@ export default function CommunicatePage() {
     setCurrentLabId(labId);
 
     // Find threat bubble
-    const stored = getThreatBubbleById(threatId);
-    const mock = MOCK_THREAT_BUBBLES.find(b => b.id === threatId);
+    const stored = getThreatBubbleById(activeThreatId);
+    const mock = MOCK_THREAT_BUBBLES.find(b => b.id === activeThreatId);
     const bubble = stored || mock;
 
     if (!bubble) {
-      router.push('/');
+      // If target threat not found, maybe redirect or just stay?
+      // Let's go back to main threat page
+      router.push(`/threat/${mainThreatId}`);
       return;
     }
 
     // Can't communicate with own threat bubble
     if (bubble.labId === labId) {
-      router.push(`/threat/${threatId}`);
+      // If we tried to communicate with our own bubble (e.g. main threat), just show view
+      router.push(`/threat/${activeThreatId}`);
       return;
     }
 
     setThreatBubble(bubble);
-  }, [threatId, router]);
+  }, [activeThreatId, mainThreatId, router]);
 
   if (!threatBubble || !currentLabId) {
     return null;
@@ -54,7 +63,7 @@ export default function CommunicatePage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
         <button
-          onClick={() => router.push(`/threat/${threatId}`)}
+          onClick={() => router.push(`/threat/${mainThreatId}`)}
           className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 mb-6"
         >
           ← Back to Threat Bubble
@@ -87,7 +96,7 @@ export default function CommunicatePage() {
         {/* Communication Channel Component */}
         <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
           <CommunicationChannel
-            threatBubbleId={threatId}
+            threatBubbleId={activeThreatId}
             currentLabId={currentLabId}
             otherLabId={otherLabId}
           />
@@ -96,4 +105,3 @@ export default function CommunicatePage() {
     </div>
   );
 }
-
