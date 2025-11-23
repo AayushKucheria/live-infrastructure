@@ -1,11 +1,20 @@
 // Client-side storage utilities using localStorage
 import { normalizeLabId } from './mockData';
+import { PRIMARY_LAB_ID } from './constants';
 
 const STORAGE_KEYS = {
   CURRENT_LAB: 'currentLab',
   THREAT_BUBBLES: 'threatBubbles',
   COMMUNICATION_CHANNELS: 'communicationChannels'
 };
+
+function sanitizeLabId(labId?: string | null): string | null {
+  if (!labId) {
+    return null;
+  }
+  const normalized = normalizeLabId(labId);
+  return normalized === PRIMARY_LAB_ID ? PRIMARY_LAB_ID : null;
+}
 
 export interface ClarificationAnnotation {
   id: string;
@@ -50,13 +59,23 @@ export interface StoredCommunicationChannel {
 // Current lab storage
 export function setCurrentLab(labId: string): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_LAB, labId);
+    const sanitized = sanitizeLabId(labId);
+    if (sanitized) {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_LAB, sanitized);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_LAB);
+    }
   }
 }
 
 export function getCurrentLab(): string | null {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(STORAGE_KEYS.CURRENT_LAB);
+    const stored = localStorage.getItem(STORAGE_KEYS.CURRENT_LAB);
+    const sanitized = sanitizeLabId(stored);
+    if (!sanitized && stored) {
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_LAB);
+    }
+    return sanitized;
   }
   return null;
 }

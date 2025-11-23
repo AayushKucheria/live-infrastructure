@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getLabById, MOCK_LABS, MOCK_THREAT_BUBBLES } from '../../lib/mockData';
+import { getLabById, MOCK_THREAT_BUBBLES } from '../../lib/mockData';
 import { getCurrentLab, getThreatBubbles } from '../../lib/storage';
 import ThreatBubbleCard from '../../components/ThreatBubbleCard';
 import Link from 'next/link';
+import { PRIMARY_LAB_ID } from '../../lib/constants';
 
 export default function LabDashboard() {
   const params = useParams();
@@ -15,16 +16,21 @@ export default function LabDashboard() {
   const [allThreatBubbles, setAllThreatBubbles] = useState<any[]>([]);
 
   useEffect(() => {
+    if (labId !== PRIMARY_LAB_ID) {
+      router.replace('/');
+      return;
+    }
+
     // Verify user is joined as this lab
     const currentLab = getCurrentLab();
-    if (currentLab !== labId) {
-      router.push('/');
+    if (currentLab !== PRIMARY_LAB_ID) {
+      router.replace('/');
       return;
     }
 
     const labData = getLabById(labId);
     if (!labData) {
-      router.push('/');
+      router.replace('/');
       return;
     }
 
