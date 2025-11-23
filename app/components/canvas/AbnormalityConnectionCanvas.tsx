@@ -394,7 +394,7 @@ export default function AbnormalityConnectionCanvas({
           </TransformComponent>
         </TransformWrapper>
         
-        <FloatingDock abnormalities={libraryAbnormalities} />
+        <FloatingDock abnormalities={libraryAbnormalities} mainAbnormality={mainAbnormality} />
 
         {/* Selection Action Bar - HIDDEN since we moved action to card */ }
         {/*
