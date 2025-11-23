@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { getRandomSituationSample } from '../lib/situationSamples';
 
 interface StructuredThreatData {
   description: string;
@@ -122,6 +123,19 @@ export default function FreeFormThreatInput({
     analyzeInput(newText);
   };
 
+  // Handle random situation roll
+  const handleRandomSituation = () => {
+    const randomSituation = getRandomSituationSample();
+    onChange(randomSituation);
+    // Trigger analysis immediately
+    analyzeInput(randomSituation);
+    // Scroll to textarea to show the populated content
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -133,6 +147,20 @@ export default function FreeFormThreatInput({
 
   return (
     <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Describe the threat or situation
+        </label>
+        <button
+          type="button"
+          onClick={handleRandomSituation}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded-lg transition-colors border border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500"
+          title="Roll a random situation sample"
+        >
+          <span className="text-lg">🎲</span>
+          <span>Roll Random Situation</span>
+        </button>
+      </div>
       <div className="relative">
         <textarea
           ref={textareaRef}

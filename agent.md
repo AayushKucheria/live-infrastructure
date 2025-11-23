@@ -106,13 +106,21 @@ live-infrastructure/
 **Draft One Complete** - Core features implemented:
 
 - ✅ Lab selection interface (5 mock labs with predefined situations)
+- ✅ Mock labs now include 3-6 sample threat bubbles per lab (except NIV) so the world feels “alive” immediately
 - ✅ Threat bubble creation with privacy levels (high/medium/low)
 - ✅ Threat bubble viewing with relevance matching
 - ✅ Communication channels (request/send/conditional flows)
 - ✅ Client-side storage (localStorage)
 - ✅ Simple relevance matching algorithm
 
+### Recent Updates (Nov 2025)
+- Removed the per-lab “Current Situation” block; labs now rely on fresh threat bubbles + dice-roll suggestions instead of static text.
+- Added a playful “🎲 Roll Random Situation” button to the freeform threat input (4-6 curated prompts spanning detection contexts + tone variance).
+- Preloaded UK/US/Singapore/Brazil labs with diverse threat bubbles; NIV starts empty so users can play as NIV and see an active world.
+- Normalized legacy lab IDs (e.g. `indian-biotech`, `singapore-biosurveillance`) so older/localStorage data resolves to current lab definitions.
+- Threat cards log + display the underlying `labId` when no lab is resolved, helping debug future data mismatches.
+
 The prototype demonstrates the core coordination flow: labs can create threat bubbles, view relevant bubbles from other labs, and initiate communication channels. Privacy levels control information visibility. All data is stored client-side for the draft version.
 
-See `docs/architecture.md` for detailed implementation status and future enhancements.
+See `docs/architecture.md` for detailed implementation status and future enhancements. Docs now mention the dice-roll helper, richer mock data, and lab ID normalization.
 

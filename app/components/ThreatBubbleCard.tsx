@@ -21,6 +21,11 @@ interface ThreatBubbleCardProps {
 export default function ThreatBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate }: ThreatBubbleCardProps) {
   const lab = getLabById(bubble.labId);
   
+  // Debug: Log when lab is not found
+  if (!lab && typeof window !== 'undefined') {
+    console.warn(`Lab not found for labId: "${bubble.labId}" in threat bubble: ${bubble.id}`);
+  }
+  
   const urgencyColors = {
     high: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
@@ -53,14 +58,14 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, disa
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              {lab?.name || 'Unknown Lab'}
+              {lab?.name || `Unknown Lab (${bubble.labId})`}
             </h3>
             <span className={`text-xs px-2 py-1 rounded-full font-medium ${urgencyColors[bubble.urgency]}`}>
               {bubble.urgency.toUpperCase()}
             </span>
           </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
-            {lab?.location} • {bubble.detectionMethod}
+            {lab?.location || 'Unknown Location'} • {bubble.detectionMethod}
           </p>
         </div>
         <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-400">

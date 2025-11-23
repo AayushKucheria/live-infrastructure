@@ -1,4 +1,5 @@
 // Client-side storage utilities using localStorage
+import { normalizeLabId } from './mockData';
 
 const STORAGE_KEYS = {
   CURRENT_LAB: 'currentLab',
@@ -70,7 +71,11 @@ export function clearCurrentLab(): void {
 export function saveThreatBubble(bubble: StoredThreatBubble): void {
   if (typeof window !== 'undefined') {
     const existing = getThreatBubbles();
-    const updated = [...existing.filter(b => b.id !== bubble.id), bubble];
+    const normalizedBubble: StoredThreatBubble = {
+      ...bubble,
+      labId: normalizeLabId(bubble.labId)
+    };
+    const updated = [...existing.filter(b => b.id !== normalizedBubble.id), normalizedBubble];
     localStorage.setItem(STORAGE_KEYS.THREAT_BUBBLES, JSON.stringify(updated));
   }
 }
@@ -78,7 +83,14 @@ export function saveThreatBubble(bubble: StoredThreatBubble): void {
 export function getThreatBubbles(): StoredThreatBubble[] {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem(STORAGE_KEYS.THREAT_BUBBLES);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) {
+      return [];
+    }
+    const parsed: StoredThreatBubble[] = JSON.parse(stored);
+    return parsed.map(bubble => ({
+      ...bubble,
+      labId: normalizeLabId(bubble.labId)
+    }));
   }
   return [];
 }

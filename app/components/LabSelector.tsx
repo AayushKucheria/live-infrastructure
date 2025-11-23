@@ -42,10 +42,6 @@ export default function LabSelector() {
                 </div>
               </div>
               
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-3">
-                {lab.situation}
-              </p>
-              
               <div className="flex items-center justify-between">
                 <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-400">
                   {lab.type}
