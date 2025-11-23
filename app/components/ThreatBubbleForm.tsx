@@ -109,17 +109,20 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
 
       <div>
         <label htmlFor="timeline" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-          Timeline *
+          Detection Date *
         </label>
         <input
-          type="text"
+          type="date"
           id="timeline"
           required
           value={formData.timeline}
           onChange={(e) => handleFieldChange('timeline', e.target.value)}
+          max={new Date().toISOString().split('T')[0]}
           className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="e.g., Detected 3 days ago"
         />
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          Select the date when the threat was detected
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

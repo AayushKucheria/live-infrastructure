@@ -2,6 +2,7 @@
 
 import { getLabById } from '../lib/mockData';
 import { ThreatBubbleFormData } from '../lab/[labId]/create-threat/page';
+import { formatRelativeTimeline } from '../lib/utils';
 
 interface PostFormalPreviewProps {
   formData: ThreatBubbleFormData;
@@ -56,7 +57,7 @@ export default function PostFormalPreview({ formData, labId }: PostFormalPreview
       <div className="mb-4 pb-4 border-b border-zinc-200 dark:border-zinc-700">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-            Preview: Post-Formal Artifact
+            Preview
           </h2>
           <span className={`text-xs px-2 py-1 rounded-full font-medium ${urgencyColors[formData.urgency]}`}>
             {formData.urgency.toUpperCase()}
@@ -121,7 +122,7 @@ export default function PostFormalPreview({ formData, labId }: PostFormalPreview
                 Timeline:
               </span>
               <span className="text-sm text-zinc-700 dark:text-zinc-300 flex-1">
-                {formData.timeline}
+                {formatRelativeTimeline(formData.timeline)}
               </span>
             </div>
           )}
