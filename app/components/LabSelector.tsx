@@ -24,7 +24,7 @@ export default function LabSelector() {
             Live Coordination Infrastructure
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            Join as a research lab to coordinate threat information while respecting institutional constraints
+            Join as a research lab to coordinate abnormality information while respecting institutional constraints
           </p>
         </div>
 

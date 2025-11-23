@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getLabById, MOCK_THREAT_BUBBLES } from '../../lib/mockData';
-import { getCurrentLab, getThreatBubbles } from '../../lib/storage';
-import ThreatBubbleCard from '../../components/ThreatBubbleCard';
+import { getLabById, MOCK_ABNORMALITY_BUBBLES } from '../../lib/mockData';
+import { getCurrentLab, getAbnormalityBubbles } from '../../lib/storage';
+import AbnormalityBubbleCard from '../../components/AbnormalityBubbleCard';
 import Link from 'next/link';
 import { PRIMARY_LAB_ID } from '../../lib/constants';
 
@@ -13,7 +13,7 @@ export default function LabDashboard() {
   const router = useRouter();
   const labId = params.labId as string;
   const [lab, setLab] = useState(getLabById(labId));
-  const [allThreatBubbles, setAllThreatBubbles] = useState<any[]>([]);
+  const [allAbnormalityBubbles, setAllAbnormalityBubbles] = useState<any[]>([]);
 
   useEffect(() => {
     if (labId !== PRIMARY_LAB_ID) {
@@ -36,15 +36,15 @@ export default function LabDashboard() {
 
     setLab(labData);
     
-    // Load user's threat bubbles from localStorage
-    const userBubbles = getThreatBubbles().filter(b => b.labId === labId);
+    // Load user's abnormality bubbles from localStorage
+    const userBubbles = getAbnormalityBubbles().filter(b => b.labId === labId);
     
-    // Load predefined mock threat bubbles for this lab
-    const mockBubbles = MOCK_THREAT_BUBBLES.filter(b => b.labId === labId);
+    // Load predefined mock abnormality bubbles for this lab
+    const mockBubbles = MOCK_ABNORMALITY_BUBBLES.filter(b => b.labId === labId);
     
     // Combine both arrays
     const allBubbles = [...userBubbles, ...mockBubbles];
-    setAllThreatBubbles(allBubbles);
+    setAllAbnormalityBubbles(allBubbles);
   }, [labId, router]);
 
   if (!lab) {
@@ -82,33 +82,33 @@ export default function LabDashboard() {
         {/* Actions */}
         <div className="mb-8">
           <Link
-            href={`/lab/${labId}/create-threat`}
+            href={`/lab/${labId}/create-abnormality`}
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
-            Create Threat Bubble
+            Create Abnormality Bubble
           </Link>
         </div>
 
-        {/* Threat Bubbles */}
-        {allThreatBubbles.length > 0 && (
+        {/* Abnormality Bubbles */}
+        {allAbnormalityBubbles.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-4">
-              Threat Bubbles
+              Abnormality Bubbles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {allThreatBubbles.map((bubble) => (
-                <ThreatBubbleCard key={bubble.id} bubble={bubble} showFullDetails />
+              {allAbnormalityBubbles.map((bubble) => (
+                <AbnormalityBubbleCard key={bubble.id} bubble={bubble} showFullDetails />
               ))}
             </div>
           </div>
         )}
 
         {/* Info */}
-        {allThreatBubbles.length === 0 && (
+        {allAbnormalityBubbles.length === 0 && (
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
             <p className="text-blue-800 dark:text-blue-300">
-              Create your first threat bubble to start coordinating with other labs. 
-              The system will automatically match you with relevant threat bubbles from other labs.
+              Create your first abnormality bubble to start coordinating with other labs. 
+              The system will automatically match you with relevant abnormality bubbles from other labs.
             </p>
           </div>
         )}

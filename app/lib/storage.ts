@@ -4,7 +4,7 @@ import { PRIMARY_LAB_ID } from './constants';
 
 const STORAGE_KEYS = {
   CURRENT_LAB: 'currentLab',
-  THREAT_BUBBLES: 'threatBubbles',
+  ABNORMALITY_BUBBLES: 'abnormalityBubbles',
   COMMUNICATION_CHANNELS: 'communicationChannels'
 };
 
@@ -23,7 +23,7 @@ export interface ClarificationAnnotation {
   createdAt: string;
 }
 
-export interface StoredThreatBubble {
+export interface StoredAbnormalityBubble {
   id: string;
   labId: string;
   description: string;
@@ -44,7 +44,7 @@ export interface StoredThreatBubble {
 
 export interface StoredCommunicationChannel {
   id: string;
-  threatBubbleId: string;
+  abnormalityBubbleId: string;
   participants: string[];
   messages: Array<{
     id: string;
@@ -86,36 +86,43 @@ export function clearCurrentLab(): void {
   }
 }
 
-// Threat bubbles storage
-export function saveThreatBubble(bubble: StoredThreatBubble): void {
+// Abnormality bubbles storage
+export function saveAbnormalityBubble(bubble: StoredAbnormalityBubble): void {
   if (typeof window !== 'undefined') {
-    const existing = getThreatBubbles();
-    const normalizedBubble: StoredThreatBubble = {
+    const existing = getAbnormalityBubbles();
+    const normalizedBubble: StoredAbnormalityBubble = {
       ...bubble,
       labId: normalizeLabId(bubble.labId)
     };
     const updated = [...existing.filter(b => b.id !== normalizedBubble.id), normalizedBubble];
-    localStorage.setItem(STORAGE_KEYS.THREAT_BUBBLES, JSON.stringify(updated));
+    localStorage.setItem(STORAGE_KEYS.ABNORMALITY_BUBBLES, JSON.stringify(updated));
   }
 }
 
-export function getThreatBubbles(): StoredThreatBubble[] {
+export function getAbnormalityBubbles(): StoredAbnormalityBubble[] {
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem(STORAGE_KEYS.THREAT_BUBBLES);
+    // Check for legacy key first for backward compatibility
+    const legacyStored = localStorage.getItem('threatBubbles');
+    const stored = localStorage.getItem(STORAGE_KEYS.ABNORMALITY_BUBBLES) || legacyStored;
     if (!stored) {
       return [];
     }
-    const parsed: StoredThreatBubble[] = JSON.parse(stored);
-    return parsed.map(bubble => ({
+    const parsed: StoredAbnormalityBubble[] = JSON.parse(stored);
+    const normalized = parsed.map(bubble => ({
       ...bubble,
       labId: normalizeLabId(bubble.labId)
     }));
+    // Migrate to new key if we used legacy key
+    if (legacyStored && !localStorage.getItem(STORAGE_KEYS.ABNORMALITY_BUBBLES)) {
+      localStorage.setItem(STORAGE_KEYS.ABNORMALITY_BUBBLES, JSON.stringify(normalized));
+    }
+    return normalized;
   }
   return [];
 }
 
-export function getThreatBubbleById(id: string): StoredThreatBubble | undefined {
-  return getThreatBubbles().find(b => b.id === id);
+export function getAbnormalityBubbleById(id: string): StoredAbnormalityBubble | undefined {
+  return getAbnormalityBubbles().find(b => b.id === id);
 }
 
 // Communication channels storage
@@ -139,7 +146,7 @@ export function getCommunicationChannelById(id: string): StoredCommunicationChan
   return getCommunicationChannels().find(c => c.id === id);
 }
 
-export function getCommunicationChannelsByThreatBubble(threatBubbleId: string): StoredCommunicationChannel[] {
-  return getCommunicationChannels().filter(c => c.threatBubbleId === threatBubbleId);
+export function getCommunicationChannelsByAbnormalityBubble(abnormalityBubbleId: string): StoredCommunicationChannel[] {
+  return getCommunicationChannels().filter(c => c.abnormalityBubbleId === abnormalityBubbleId);
 }
 

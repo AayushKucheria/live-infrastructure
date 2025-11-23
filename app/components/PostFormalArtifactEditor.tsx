@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getLabById } from '../lib/mockData';
 import ClarificationAnnotation, { Clarification } from './ClarificationAnnotation';
 
-interface StructuredThreatData {
+interface StructuredAbnormalityData {
   description: string;
   location: string;
   detectionMethod: string;
@@ -17,10 +17,10 @@ interface StructuredThreatData {
 }
 
 interface PostFormalArtifactEditorProps {
-  structuredData: StructuredThreatData;
+  structuredData: StructuredAbnormalityData;
   labId: string;
   privacyLevel: 'high' | 'medium' | 'low';
-  onDataChange: (data: StructuredThreatData) => void;
+  onDataChange: (data: StructuredAbnormalityData) => void;
   clarifications: Clarification[];
   onClarificationAdd: (section: string, content: string) => void;
   onClarificationRemove: (id: string) => void;
@@ -173,7 +173,7 @@ export default function PostFormalArtifactEditor({
       <div className="h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
         <div className="text-center">
           <p className="text-sm">Preview will appear here</p>
-          <p className="text-xs mt-2">Start typing to see how your threat bubble will appear to recipients</p>
+          <p className="text-xs mt-2">Start typing to see how your abnormality bubble will appear to recipients</p>
         </div>
       </div>
     );
@@ -191,7 +191,7 @@ export default function PostFormalArtifactEditor({
           </span>
         </div>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Click any section to edit • This is how recipients will see your threat bubble
+          Click any section to edit • This is how recipients will see your abnormality bubble
         </p>
       </div>
 

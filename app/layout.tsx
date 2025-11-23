@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Live Coordination Infrastructure",
-  description: "Coordinate threat information between research labs while respecting institutional constraints",
+  description: "Coordinate abnormality information between research labs while respecting institutional constraints",
 };
 
 export default function RootLayout({

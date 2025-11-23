@@ -1,15 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { ThreatBubble } from '../lib/mockData';
-import { StoredThreatBubble } from '../lib/storage';
+import { AbnormalityBubble } from '../lib/mockData';
+import { StoredAbnormalityBubble } from '../lib/storage';
 import { getLabById } from '../lib/mockData';
 import { formatRelativeTimeline } from '../lib/utils';
 
-type ThreatBubbleUnion = ThreatBubble | StoredThreatBubble;
+type AbnormalityBubbleUnion = AbnormalityBubble | StoredAbnormalityBubble;
 
-interface ThreatBubbleCardProps {
-  bubble: ThreatBubbleUnion;
+interface AbnormalityBubbleCardProps {
+  bubble: AbnormalityBubbleUnion;
   showFullDetails?: boolean;
   matchExplanation?: string;
   disableLink?: boolean;
@@ -18,12 +18,12 @@ interface ThreatBubbleCardProps {
   onCommunicate?: () => void;
 }
 
-export default function ThreatBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate }: ThreatBubbleCardProps) {
+export default function AbnormalityBubbleCard({ bubble, showFullDetails = false, disableLink = false, isSelected = false, onClick, onCommunicate }: AbnormalityBubbleCardProps) {
   const lab = getLabById(bubble.labId);
   
   // Debug: Log when lab is not found
   if (!lab && typeof window !== 'undefined') {
-    console.warn(`Lab not found for labId: "${bubble.labId}" in threat bubble: ${bubble.id}`);
+    console.warn(`Lab not found for labId: "${bubble.labId}" in abnormality bubble: ${bubble.id}`);
   }
   
   const urgencyColors = {
@@ -54,30 +54,31 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, disa
             }
         `}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              {lab?.name || `Unknown Lab (${bubble.labId})`}
-            </h3>
-            <span className={`text-xs px-2 py-1 rounded-full font-medium ${urgencyColors[bubble.urgency]}`}>
-              {bubble.urgency.toUpperCase()}
-            </span>
-          </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
-            {lab?.location || 'Unknown Location'} • {bubble.detectionMethod}
-          </p>
+      {/* Primary: Abnormality Description */}
+      <div className="mb-4">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 flex-1 leading-tight">
+            {bubble.description}
+          </h3>
+          <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${urgencyColors[bubble.urgency]}`}>
+            {bubble.urgency.toUpperCase()}
+          </span>
         </div>
-        <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-400">
-          {privacyLabels[bubble.privacyLevel]}
-        </span>
+        
+        {/* Secondary: Lab name and location */}
+        <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-3">
+          <span>{lab?.name || `Unknown Lab (${bubble.labId})`}</span>
+          <span>•</span>
+          <span>{lab?.location || 'Unknown Location'}</span>
+        </div>
       </div>
 
-      <p className="text-zinc-700 dark:text-zinc-300 mb-4">
-        {bubble.description}
-      </p>
-
+      {/* Contextual Information */}
       <div className="space-y-2 mb-4 text-sm">
+        <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+          <span className="font-medium">Detection Method:</span>
+          <span>{bubble.detectionMethod}</span>
+        </div>
         <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
           <span className="font-medium">Location:</span>
           <span>{canShowMediumDetails && bubble.specificLocation ? bubble.specificLocation : bubble.location}</span>
@@ -105,10 +106,16 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, disa
         )}
       </div>
 
+      {/* Footer with metadata */}
       <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-700">
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          {new Date(bubble.createdAt).toLocaleDateString()}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            {new Date(bubble.createdAt).toLocaleDateString()}
+          </span>
+          <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-400">
+            {privacyLabels[bubble.privacyLevel]}
+          </span>
+        </div>
         
         {onCommunicate && (
           <button
@@ -131,7 +138,7 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false, disa
   }
 
   return (
-    <Link href={`/threat/${bubble.id}`}>
+    <Link href={`/abnormality/${bubble.id}`}>
       {content}
     </Link>
   );

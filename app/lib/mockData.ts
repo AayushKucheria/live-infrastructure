@@ -1,4 +1,4 @@
-// Mock data for labs, situations, and threat bubbles
+// Mock data for labs, situations, and abnormality bubbles
 
 export interface Lab {
   id: string;
@@ -8,7 +8,7 @@ export interface Lab {
   type: string;
 }
 
-export interface ThreatBubble {
+export interface AbnormalityBubble {
   id: string;
   labId: string;
   description: string;
@@ -27,7 +27,7 @@ export interface ThreatBubble {
 
 export interface CommunicationChannel {
   id: string;
-  threatBubbleId: string;
+  abnormalityBubbleId: string;
   participants: string[]; // labIds
   messages: Array<{
     id: string;
@@ -90,9 +90,9 @@ export function normalizeLabId(labId: string): string {
   return LEGACY_LAB_ID_MAP[labId] || labId;
 }
 
-// Mock threat bubbles from other labs (for demonstration)
+// Mock abnormality bubbles from other labs (for demonstration)
 // Note: NIV (india-niv) has no predefined bubbles - they create their own
-export const MOCK_THREAT_BUBBLES: ThreatBubble[] = [
+export const MOCK_ABNORMALITY_BUBBLES: AbnormalityBubble[] = [
   // UK Health Security Agency (UKHSA) - 5 bubbles
   {
     id: 'threat-uk-1',
@@ -383,8 +383,8 @@ export function getLabById(labId: string): Lab | undefined {
   return MOCK_LABS.find(lab => lab.id === normalized);
 }
 
-// Helper function to get threat bubbles by lab ID
-export function getThreatBubblesByLabId(labId: string): ThreatBubble[] {
-  return MOCK_THREAT_BUBBLES.filter(bubble => bubble.labId === labId);
+// Helper function to get abnormality bubbles by lab ID
+export function getAbnormalityBubblesByLabId(labId: string): AbnormalityBubble[] {
+  return MOCK_ABNORMALITY_BUBBLES.filter(bubble => bubble.labId === labId);
 }
 

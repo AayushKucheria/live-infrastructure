@@ -19,21 +19,21 @@ live-infrastructure/
 │   ├── globals.css                   # Global styles
 │   ├── components/
 │   │   ├── LabSelector.tsx           # Lab selection interface
-│   │   ├── ThreatBubbleCard.tsx      # Display threat bubbles
-│   │   ├── ThreatBubbleForm.tsx      # Create threat bubble form
+│   │   ├── AbnormalityBubbleCard.tsx      # Display abnormality bubbles
+│   │   ├── AbnormalityBubbleForm.tsx      # Create abnormality bubble form
 │   │   └── CommunicationChannel.tsx  # Communication interface
 │   ├── lab/
 │   │   └── [labId]/
 │   │       ├── page.tsx              # Lab dashboard
-│   │       └── create-threat/
-│   │           └── page.tsx          # Create threat bubble flow
-│   ├── threat/
-│   │   └── [threatId]/
-│   │       ├── page.tsx              # View threat bubble + relevant bubbles
+│   │       └── create-abnormality/
+│   │           └── page.tsx          # Create abnormality bubble flow
+│   ├── abnormality/
+│   │   └── [abnormalityId]/
+│   │       ├── page.tsx              # View abnormality bubble + relevant bubbles
 │   │       └── communicate/
 │   │           └── page.tsx          # Communication channel interface
 │   └── lib/
-│       ├── mockData.ts               # Mock labs, situations, threat bubbles
+│       ├── mockData.ts               # Mock labs, situations, abnormality bubbles
 │       ├── storage.ts                 # localStorage utilities
 │       └── matching.ts                # Relevance matching algorithm
 ├── docs/
@@ -67,22 +67,23 @@ live-infrastructure/
 ### ✅ Implemented Features (Draft One, continuously refined)
 
 #### Core Functionality
-- [x] **Lab Selection**: Users can join as one of 5 national biosecurity agencies. Static “Current Situation” cards were removed; labs now lean on live threat bubbles + AI-assisted prompts.
-- [x] **Threat Bubble Creation**: Form-based creation with privacy levels (high/medium/low)
-- [x] **AI Helpers in Creation**: Free-form threat editor now includes a “🎲 Roll Random Situation” button that drops in 4-6 curated prompts spanning tone/detection contexts.
+- [x] **Lab Selection**: Users can join as one of 5 national biosecurity agencies. Static "Current Situation" cards were removed; labs now lean on live abnormality bubbles + AI-assisted prompts.
+- [x] **Abnormality Bubble Creation**: Form-based creation with privacy levels (high/medium/low)
+- [x] **AI Helpers in Creation**: Free-form abnormality editor now includes a "🎲 Roll Random Situation" button that drops in 4-6 curated prompts spanning tone/detection contexts.
 - [x] **Privacy Filtering**: Details shown/hidden based on selected privacy level
-- [x] **Threat Bubble Feed & Library**: Labs now preload 3-6 bubbles (except NIV) so the world feels active immediately; legacy lab IDs are normalized so older bubbles render correctly.
+- [x] **Abnormality Bubble Feed & Library**: Labs now preload 3-6 bubbles (except NIV) so the world feels active immediately; legacy lab IDs are normalized so older bubbles render correctly.
+- [x] **UX Reorganization**: Abnormality description is now primary in cards, with lab name/geography as secondary contextual information.
 - [x] **Relevance Matching**: Simple algorithm matching by location, method, urgency, timeline, keywords
 - [x] **Communication Channels**: Interface for requesting info, sending info, conditional flows
 
 #### Data Models
 - **Lab**: id, name, situation, location, type
-- **ThreatBubble**: id, labId, description, location, detectionMethod, timeline, urgency, privacyLevel, createdAt, detailedFindings, specificLocation, sampleCount, geneticMarkers
-- **CommunicationChannel**: id, threatBubbleId, participants, messages (with type: request/send/conditional)
+- **AbnormalityBubble**: id, labId, description, location, detectionMethod, timeline, urgency, privacyLevel, createdAt, detailedFindings, specificLocation, sampleCount, geneticMarkers
+- **CommunicationChannel**: id, abnormalityBubbleId, participants, messages (with type: request/send/conditional)
 
 #### Technical Implementation
 - Client-side storage using localStorage (no backend required for draft)
-- Mock data for labs and initial threat bubbles
+- Mock data for labs and initial abnormality bubbles
 - Simple keyword/location/urgency-based matching algorithm
 - Responsive UI with dark mode support
 - TypeScript for type safety
@@ -100,7 +101,7 @@ live-infrastructure/
 
 ### Technical Considerations (latest)
 - Current: Client-side only (localStorage) - suitable for prototype/demo
-- Threat bubbles stored locally are auto-normalized to current lab IDs (handles older data like `indian-biotech`, `singapore-biosurveillance`)
+- Abnormality bubbles stored locally are auto-normalized to current lab IDs (handles older data like `indian-biotech`, `singapore-biosurveillance`)
 - Future: Backend API needed for production
 - Future: Real-time coordination requires WebSocket or similar
 - Future: AI integration for adaptive privacy/context preservation
@@ -122,8 +123,8 @@ live-infrastructure/
 - Legacy IDs normalized to NCID: `singapore-biosurveillance`, `singapore-biosurv`
 - **brazil-fiocruz**: Fiocruz - Oswaldo Cruz Foundation - Rio de Janeiro, Brazil - National Health Research Institute
 
-### Threat Bubble Creation
-1. From lab dashboard, user can create a threat bubble
+### Abnormality Bubble Creation
+1. From lab dashboard, user can create an abnormality bubble
 2. Form includes: description, location, detection method, timeline, urgency, privacy level
 3. Optional helpers:
    - **🎲 Random Situation**: Inserts AI-curated prompts to kickstart description/timeline
@@ -134,9 +135,9 @@ live-infrastructure/
    - **Low**: Full details including sample count and genetic markers
 4. Created bubble is stored in localStorage
 
-### Threat Bubble Viewing
-1. View individual threat bubble with full details (filtered by privacy level)
-2. Sidebar shows relevant threat bubbles from other labs
+### Abnormality Bubble Viewing
+1. View individual abnormality bubble with full details (filtered by privacy level)
+2. Sidebar shows relevant abnormality bubbles from other labs
 3. Relevance matching based on:
    - Location similarity
    - Detection method match
@@ -146,7 +147,7 @@ live-infrastructure/
    - Genetic marker overlap (if available)
 
 ### Communication Channels
-1. From any threat bubble (not your own), can start a communication channel
+1. From any abnormality bubble (not your own), can start a communication channel
 2. Three message types:
    - **Request Information**: Ask for specific details
    - **Send Information**: Share information proactively

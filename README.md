@@ -22,8 +22,8 @@ Live coordination infrastructure that enables:
   - US Centers for Disease Control and Prevention (CDC) - United States
   - National Centre for Infectious Diseases (NCID) - Singapore
   - Fiocruz - Oswaldo Cruz Foundation - Brazil
-- **Threat Bubble Creation**: Share threat information with configurable privacy levels (high/medium/low)
-- **Relevance Matching**: Automatically find related threat bubbles from other labs
+- **Abnormality Bubble Creation**: Share abnormality information with configurable privacy levels (high/medium/low)
+- **Relevance Matching**: Automatically find related abnormality bubbles from other labs
 - **Communication Channels**: Request information, send information, or set up conditional information flows
 - **Privacy Filtering**: Details shown/hidden based on selected privacy level
 

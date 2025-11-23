@@ -3,24 +3,24 @@
 import { useState, useEffect } from 'react';
 import { StoredCommunicationChannel } from '../lib/storage';
 import { getLabById } from '../lib/mockData';
-import { saveCommunicationChannel, getCommunicationChannelsByThreatBubble } from '../lib/storage';
+import { saveCommunicationChannel, getCommunicationChannelsByAbnormalityBubble } from '../lib/storage';
 
 interface CommunicationChannelProps {
-  threatBubbleId: string;
+  abnormalityBubbleId: string;
   currentLabId: string;
   otherLabId: string;
 }
 
-export default function CommunicationChannel({ threatBubbleId, currentLabId, otherLabId }: CommunicationChannelProps) {
+export default function CommunicationChannel({ abnormalityBubbleId, currentLabId, otherLabId }: CommunicationChannelProps) {
   const [channels, setChannels] = useState<StoredCommunicationChannel[]>([]);
   const [messageType, setMessageType] = useState<'request' | 'send' | 'conditional'>('request');
   const [messageContent, setMessageContent] = useState('');
   const [conditions, setConditions] = useState('');
 
   useEffect(() => {
-    const existing = getCommunicationChannelsByThreatBubble(threatBubbleId);
+    const existing = getCommunicationChannelsByAbnormalityBubble(abnormalityBubbleId);
     setChannels(existing);
-  }, [threatBubbleId]);
+  }, [abnormalityBubbleId]);
 
   const currentLab = getLabById(currentLabId);
   const otherLab = getLabById(otherLabId);
@@ -36,7 +36,7 @@ export default function CommunicationChannel({ threatBubbleId, currentLabId, oth
     if (!channel) {
       channel = {
         id: `channel-${Date.now()}`,
-        threatBubbleId,
+        abnormalityBubbleId,
         participants: [currentLabId, otherLabId],
         messages: []
       };
