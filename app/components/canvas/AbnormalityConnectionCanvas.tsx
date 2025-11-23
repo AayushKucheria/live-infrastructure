@@ -280,6 +280,28 @@ export default function AbnormalityConnectionCanvas({
       setSelectedNodeId(null);
   };
 
+  const handleDeleteNode = (nodeId: string) => {
+    const nodeToDelete = nodes.find(n => n.id === nodeId);
+    if (!nodeToDelete || nodeToDelete.type !== 'abnormality') {
+      return; // Only allow deletion of abnormality nodes
+    }
+
+    // Remove node from canvas
+    setNodes(prev => prev.filter(n => n.id !== nodeId));
+    
+    // Remove associated explanation
+    setExplanations(prev => {
+      const newExplanations = { ...prev };
+      delete newExplanations[nodeId];
+      return newExplanations;
+    });
+
+    // Clear selection if the deleted node was selected
+    if (selectedNodeId === nodeId) {
+      setSelectedNodeId(null);
+    }
+  };
+
   const activeLibraryAbnormality = libraryAbnormalities.find(t => t.id === activeId);
   const activeCanvasNode = nodes.find(n => n.id === activeId);
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
@@ -385,6 +407,8 @@ export default function AbnormalityConnectionCanvas({
                                isSelected={selectedNodeId === node.id}
                                onClick={() => handleNodeClick(node.id)}
                                onCommunicate={() => router.push(`/abnormality/${mainAbnormality.id}/communicate?target=${node.id}`)}
+                               onDelete={() => handleDeleteNode(node.id)}
+                               canDelete={true}
                              />
                           )}
                         </div>
