@@ -42,11 +42,11 @@ This project embodies the "Live Machinery" design philosophy (see `docs/design_g
 
 ## Example Scenario
 
-**Party A (Indian biotech lab)**: Detects unusual pattern in local wastewater samples - possible novel pathogen, but not sure, don't want to cause panic
+**Party A (National Institute of Virology - NIV, India)**: Detects unusual pattern in local wastewater samples - possible novel pathogen, but not sure, don't want to cause panic
 
-**Party B (UK NHS genomics)**: Has seen similar genetic markers in respiratory illness cases, but assumed it was flu variant
+**Party B (UK Health Security Agency - UKHSA)**: Has seen similar genetic markers in respiratory illness cases, but assumed it was flu variant
 
-**Party C (US CDC)**: Has modeling suggesting something should be emerging but no concrete data
+**Party C (US Centers for Disease Control and Prevention - CDC)**: Has modeling suggesting something should be emerging but no concrete data
 
 Each has pieces valuable to others, but also reasons to be cautious. The system enables them to:
 - Negotiate what to share in real-time
@@ -99,6 +99,7 @@ live-infrastructure/
 3. **Peer-to-peer**: Decentralized meaning, not centralized authority
 4. **Context-preserving**: Recontextualize rather than decontextualize
 5. **Just-in-time**: Generate structure based on context, not pre-defined protocols
+6. **Documentation maintenance**: After every code change, update relevant documentation files (agent.md, README.md, docs/*.md) to reflect the changes
 
 ## Current Status
 

@@ -44,9 +44,9 @@ Would anyone use it?
 Which has clearest "oomph" factor? Where does demo make someone go "Oh shit, we needed this"?
 
 Fake data approach: I'd suggest creating a scenario like:
-Party A (Indian biotech lab): Detects unusual pattern in local wastewater samples - possible novel pathogen, but not sure, don't want to cause panic
-Party B (UK NHS genomics): Has seen similar genetic markers in respiratory illness cases, but assumed it was flu variant
-Party C (US CDC): Has modeling suggesting something should be emerging but no concrete data
+Party A (National Institute of Virology - NIV, India): Detects unusual pattern in local wastewater samples - possible novel pathogen, but not sure, don't want to cause panic
+Party B (UK Health Security Agency - UKHSA): Has seen similar genetic markers in respiratory illness cases, but assumed it was flu variant
+Party C (US Centers for Disease Control and Prevention - CDC): Has modeling suggesting something should be emerging but no concrete data
 Each has pieces that would be valuable to others, but also reasons to be cautious about sharing (reputation risk, bioweapon concerns, economic impact if it causes travel restrictions).
 Your uncertainty is the right uncertainty
 Your comment "I've got so many unknown unknowns when it comes to health things" is exactly the validation question you need to answer. Here's how I'd approach it:
