@@ -3,6 +3,7 @@
 import { ThreatBubble } from '../lib/mockData';
 import { StoredThreatBubble } from '../lib/storage';
 import { getLabById } from '../lib/mockData';
+import { formatRelativeTimeline } from '../lib/utils';
 import Link from 'next/link';
 
 type ThreatBubbleUnion = ThreatBubble | StoredThreatBubble;
@@ -63,7 +64,7 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false }: Th
         </div>
         <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
           <span className="font-medium">Timeline:</span>
-          <span>{bubble.timeline}</span>
+          <span>{formatRelativeTimeline(bubble.timeline)}</span>
         </div>
         {canShowDetails && bubble.detailedFindings && (
           <div className="mt-3 p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded border-l-2 border-blue-500">
