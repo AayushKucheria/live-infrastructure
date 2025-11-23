@@ -1,29 +1,26 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveThreatBubble } from '../lib/storage';
 import { StoredThreatBubble } from '../lib/storage';
+import { ThreatBubbleFormData } from '../lab/[labId]/create-threat/page';
 
 interface ThreatBubbleFormProps {
   labId: string;
+  formData: ThreatBubbleFormData;
+  onFormDataChange: (data: ThreatBubbleFormData) => void;
   onSuccess?: () => void;
 }
 
-export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormProps) {
+export default function ThreatBubbleForm({ labId, formData, onFormDataChange, onSuccess }: ThreatBubbleFormProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    description: '',
-    location: '',
-    detectionMethod: '',
-    timeline: '',
-    urgency: 'medium' as 'low' | 'medium' | 'high',
-    privacyLevel: 'medium' as 'high' | 'medium' | 'low',
-    detailedFindings: '',
-    specificLocation: '',
-    sampleCount: '',
-    geneticMarkers: ''
-  });
+
+  const handleFieldChange = (field: keyof ThreatBubbleFormData, value: string | 'low' | 'medium' | 'high') => {
+    onFormDataChange({
+      ...formData,
+      [field]: value
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +62,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
           id="description"
           required
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) => handleFieldChange('description', e.target.value)}
           rows={3}
           className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Describe the threat or situation..."
@@ -82,7 +79,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
             id="location"
             required
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={(e) => handleFieldChange('location', e.target.value)}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="e.g., Mumbai, India"
           />
@@ -96,7 +93,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
             id="detectionMethod"
             required
             value={formData.detectionMethod}
-            onChange={(e) => setFormData({ ...formData, detectionMethod: e.target.value })}
+            onChange={(e) => handleFieldChange('detectionMethod', e.target.value)}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Select method...</option>
@@ -119,7 +116,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
           id="timeline"
           required
           value={formData.timeline}
-          onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+          onChange={(e) => handleFieldChange('timeline', e.target.value)}
           className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="e.g., Detected 3 days ago"
         />
@@ -134,7 +131,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
             id="urgency"
             required
             value={formData.urgency}
-            onChange={(e) => setFormData({ ...formData, urgency: e.target.value as 'low' | 'medium' | 'high' })}
+            onChange={(e) => handleFieldChange('urgency', e.target.value as 'low' | 'medium' | 'high')}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="low">Low</option>
@@ -151,7 +148,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
             id="privacyLevel"
             required
             value={formData.privacyLevel}
-            onChange={(e) => setFormData({ ...formData, privacyLevel: e.target.value as 'high' | 'medium' | 'low' })}
+            onChange={(e) => handleFieldChange('privacyLevel', e.target.value as 'high' | 'medium' | 'low')}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="high">High (bare minimum)</option>
@@ -177,7 +174,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
               type="text"
               id="specificLocation"
               value={formData.specificLocation}
-              onChange={(e) => setFormData({ ...formData, specificLocation: e.target.value })}
+              onChange={(e) => handleFieldChange('specificLocation', e.target.value)}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., Specific hospital or facility"
             />
@@ -190,7 +187,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
             <textarea
               id="detailedFindings"
               value={formData.detailedFindings}
-              onChange={(e) => setFormData({ ...formData, detailedFindings: e.target.value })}
+              onChange={(e) => handleFieldChange('detailedFindings', e.target.value)}
               rows={4}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Additional technical details, observations, etc."
@@ -210,7 +207,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
                 type="number"
                 id="sampleCount"
                 value={formData.sampleCount}
-                onChange={(e) => setFormData({ ...formData, sampleCount: e.target.value })}
+                onChange={(e) => handleFieldChange('sampleCount', e.target.value)}
                 className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Number of samples"
               />
@@ -224,7 +221,7 @@ export default function ThreatBubbleForm({ labId, onSuccess }: ThreatBubbleFormP
                 type="text"
                 id="geneticMarkers"
                 value={formData.geneticMarkers}
-                onChange={(e) => setFormData({ ...formData, geneticMarkers: e.target.value })}
+                onChange={(e) => handleFieldChange('geneticMarkers', e.target.value)}
                 className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Comma-separated, e.g., MUT-2024-001, MUT-2024-002"
               />
