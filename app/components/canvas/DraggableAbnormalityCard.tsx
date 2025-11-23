@@ -17,6 +17,8 @@ interface DraggableAbnormalityCardProps {
   isSelected?: boolean;
   onClick?: () => void;
   onCommunicate?: () => void;
+  onDelete?: () => void;
+  canDelete?: boolean;
 }
 
 export default function DraggableAbnormalityCard({ 
@@ -26,7 +28,9 @@ export default function DraggableAbnormalityCard({
   disableLink, 
   isSelected,
   onClick,
-  onCommunicate
+  onCommunicate,
+  onDelete,
+  canDelete
 }: DraggableAbnormalityCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: id,
@@ -56,6 +60,8 @@ export default function DraggableAbnormalityCard({
         isSelected={isSelected}
         onClick={onClick}
         onCommunicate={onCommunicate}
+        onDelete={onDelete}
+        canDelete={canDelete}
       />
     </div>
   );
