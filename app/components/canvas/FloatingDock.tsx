@@ -33,10 +33,10 @@ function DraggableCompactCard({
     cursor: isDragging ? 'grabbing' : 'grab',
   };
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e?: React.MouseEvent) => {
     // Only expand on click, not on drag start
     if (!isDragging) {
-      e.stopPropagation();
+      e?.stopPropagation();
       onExpand();
     }
   };
