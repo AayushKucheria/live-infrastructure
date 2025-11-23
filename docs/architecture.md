@@ -64,13 +64,14 @@ live-infrastructure/
 
 ## Implementation Status
 
-### ✅ Implemented Features (Draft One)
+### ✅ Implemented Features (Draft One, continuously refined)
 
 #### Core Functionality
-- [x] **Lab Selection**: Users can join as one of 5 national biosecurity agencies with predefined situations
+- [x] **Lab Selection**: Users can join as one of 5 national biosecurity agencies. Static “Current Situation” cards were removed; labs now lean on live threat bubbles + AI-assisted prompts.
 - [x] **Threat Bubble Creation**: Form-based creation with privacy levels (high/medium/low)
+- [x] **AI Helpers in Creation**: Free-form threat editor now includes a “🎲 Roll Random Situation” button that drops in 4-6 curated prompts spanning tone/detection contexts.
 - [x] **Privacy Filtering**: Details shown/hidden based on selected privacy level
-- [x] **Threat Bubble Feed**: View created bubbles and relevant bubbles from other labs
+- [x] **Threat Bubble Feed & Library**: Labs now preload 3-6 bubbles (except NIV) so the world feels active immediately; legacy lab IDs are normalized so older bubbles render correctly.
 - [x] **Relevance Matching**: Simple algorithm matching by location, method, urgency, timeline, keywords
 - [x] **Communication Channels**: Interface for requesting info, sending info, conditional flows
 
@@ -97,8 +98,9 @@ live-infrastructure/
 - [ ] User authentication (optional, currently no login required)
 - [ ] Advanced conditional information flows with game theory considerations
 
-### Technical Considerations
+### Technical Considerations (latest)
 - Current: Client-side only (localStorage) - suitable for prototype/demo
+- Threat bubbles stored locally are auto-normalized to current lab IDs (handles older data like `indian-biotech`, `singapore-biosurveillance`)
 - Future: Backend API needed for production
 - Future: Real-time coordination requires WebSocket or similar
 - Future: AI integration for adaptive privacy/context preservation
@@ -113,14 +115,19 @@ live-infrastructure/
 
 ### Available Labs (National Biosecurity Agencies)
 - **india-niv**: National Institute of Virology (NIV) - Pune, India - National Biosecurity Agency
+- Legacy IDs we normalize to NIV: `indian-biotech`, `india-biotech`
 - **uk-ukhsa**: UK Health Security Agency (UKHSA) - London, UK - National Public Health Agency
 - **us-cdc**: US Centers for Disease Control and Prevention (CDC) - Atlanta, USA - National Public Health Agency
 - **singapore-ncid**: National Centre for Infectious Diseases (NCID) - Singapore - National Infectious Disease Center
+- Legacy IDs normalized to NCID: `singapore-biosurveillance`, `singapore-biosurv`
 - **brazil-fiocruz**: Fiocruz - Oswaldo Cruz Foundation - Rio de Janeiro, Brazil - National Health Research Institute
 
 ### Threat Bubble Creation
 1. From lab dashboard, user can create a threat bubble
 2. Form includes: description, location, detection method, timeline, urgency, privacy level
+3. Optional helpers:
+   - **🎲 Random Situation**: Inserts AI-curated prompts to kickstart description/timeline
+   - AISuggestionBubbles that adapt as the free-form text evolves
 3. Privacy level determines what additional details are shown:
    - **High**: Bare minimum (description, location, method, timeline)
    - **Medium**: Adds specific location and detailed findings
