@@ -5,12 +5,38 @@ import { useParams, useRouter } from 'next/navigation';
 import { getLabById } from '../../../lib/mockData';
 import { getCurrentLab } from '../../../lib/storage';
 import ThreatBubbleForm from '../../../components/ThreatBubbleForm';
+import PostFormalPreview from '../../../components/PostFormalPreview';
+
+export interface ThreatBubbleFormData {
+  description: string;
+  location: string;
+  detectionMethod: string;
+  timeline: string;
+  urgency: 'low' | 'medium' | 'high';
+  privacyLevel: 'high' | 'medium' | 'low';
+  detailedFindings: string;
+  specificLocation: string;
+  sampleCount: string;
+  geneticMarkers: string;
+}
 
 export default function CreateThreatBubble() {
   const params = useParams();
   const router = useRouter();
   const labId = params.labId as string;
   const [lab, setLab] = useState(getLabById(labId));
+  const [formData, setFormData] = useState<ThreatBubbleFormData>({
+    description: '',
+    location: '',
+    detectionMethod: '',
+    timeline: '',
+    urgency: 'medium',
+    privacyLevel: 'medium',
+    detailedFindings: '',
+    specificLocation: '',
+    sampleCount: '',
+    geneticMarkers: ''
+  });
 
   useEffect(() => {
     // Verify user is joined as this lab
@@ -35,7 +61,7 @@ export default function CreateThreatBubble() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-black dark:to-zinc-900">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="px-4 py-8">
         <div className="mb-6">
           <button
             onClick={() => router.back()}
@@ -51,8 +77,23 @@ export default function CreateThreatBubble() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
-          <ThreatBubbleForm labId={labId} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left column: Form */}
+          <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700">
+            <ThreatBubbleForm 
+              labId={labId} 
+              formData={formData}
+              onFormDataChange={setFormData}
+            />
+          </div>
+
+          {/* Right column: Preview */}
+          <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)]">
+            <PostFormalPreview 
+              formData={formData}
+              labId={labId}
+            />
+          </div>
         </div>
       </div>
     </div>
