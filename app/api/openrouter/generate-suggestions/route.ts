@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const systemPrompt = `You are helping a researcher create a threat bubble report. Generate 2-4 subtle, helpful suggestions about what information might be useful to add.
+    const systemPrompt = `You are helping a researcher create an abnormality bubble report. Generate 2-4 subtle, helpful suggestions about what information might be useful to add.
 
 Suggestions should be:
 - Non-intrusive and gentle

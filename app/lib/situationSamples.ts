@@ -1,4 +1,4 @@
-// Diverse situation samples for random population in threat creation form
+// Diverse situation samples for random population in abnormality creation form
 // These samples vary in formality, detection context, and writing style
 
 export const SITUATION_SAMPLES: string[] = [

@@ -1,22 +1,22 @@
-// Simple relevance matching algorithm for threat bubbles
+// Simple relevance matching algorithm for abnormality bubbles
 
-import { ThreatBubble } from './mockData';
-import { StoredThreatBubble } from './storage';
-import { getThreatBubbles } from './storage';
+import { AbnormalityBubble } from './mockData';
+import { StoredAbnormalityBubble } from './storage';
+import { getAbnormalityBubbles } from './storage';
 
-export type ThreatBubbleUnion = ThreatBubble | StoredThreatBubble;
+export type AbnormalityBubbleUnion = AbnormalityBubble | StoredAbnormalityBubble;
 
 interface MatchScore {
-  bubble: ThreatBubbleUnion;
+  bubble: AbnormalityBubbleUnion;
   score: number;
   reasons: string[];
 }
 
-export function findRelevantThreatBubbles(
-  sourceBubble: ThreatBubbleUnion,
-  allBubbles: ThreatBubbleUnion[],
+export function findRelevantAbnormalityBubbles(
+  sourceBubble: AbnormalityBubbleUnion,
+  allBubbles: AbnormalityBubbleUnion[],
   limit: number = 5
-): ThreatBubbleUnion[] {
+): AbnormalityBubbleUnion[] {
   // Exclude the source bubble itself
   const otherBubbles = allBubbles.filter(b => b.id !== sourceBubble.id);
   
@@ -93,11 +93,11 @@ export function findRelevantThreatBubbles(
     .map(item => item.bubble);
 }
 
-import { MOCK_THREAT_BUBBLES } from './mockData';
+import { MOCK_ABNORMALITY_BUBBLES } from './mockData';
 
-export function getAllThreatBubbles(): ThreatBubbleUnion[] {
+export function getAllAbnormalityBubbles(): AbnormalityBubbleUnion[] {
   // Combine stored bubbles with mock bubbles
-  const stored = getThreatBubbles();
-  return [...stored, ...MOCK_THREAT_BUBBLES];
+  const stored = getAbnormalityBubbles();
+  return [...stored, ...MOCK_ABNORMALITY_BUBBLES];
 }
 

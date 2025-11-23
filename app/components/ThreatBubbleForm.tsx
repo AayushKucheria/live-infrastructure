@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { saveThreatBubble } from '../lib/storage';
-import { StoredThreatBubble } from '../lib/storage';
+import { saveAbnormalityBubble } from '../lib/storage';
+import { StoredAbnormalityBubble } from '../lib/storage';
 
 // Legacy interface - kept for backward compatibility
-// This component is replaced by FreeFormThreatInput + PostFormalArtifactEditor
-interface ThreatBubbleFormData {
+// This component is replaced by FreeFormAbnormalityInput + PostFormalArtifactEditor
+interface AbnormalityBubbleFormData {
   description: string;
   location: string;
   detectionMethod: string;
@@ -19,17 +19,17 @@ interface ThreatBubbleFormData {
   geneticMarkers: string;
 }
 
-interface ThreatBubbleFormProps {
+interface AbnormalityBubbleFormProps {
   labId: string;
-  formData: ThreatBubbleFormData;
-  onFormDataChange: (data: ThreatBubbleFormData) => void;
+  formData: AbnormalityBubbleFormData;
+  onFormDataChange: (data: AbnormalityBubbleFormData) => void;
   onSuccess?: () => void;
 }
 
-export default function ThreatBubbleForm({ labId, formData, onFormDataChange, onSuccess }: ThreatBubbleFormProps) {
+export default function AbnormalityBubbleForm({ labId, formData, onFormDataChange, onSuccess }: AbnormalityBubbleFormProps) {
   const router = useRouter();
 
-  const handleFieldChange = (field: keyof ThreatBubbleFormData, value: string | 'low' | 'medium' | 'high') => {
+  const handleFieldChange = (field: keyof AbnormalityBubbleFormData, value: string | 'low' | 'medium' | 'high') => {
     onFormDataChange({
       ...formData,
       [field]: value
@@ -39,8 +39,8 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const bubble: StoredThreatBubble = {
-      id: `threat-${Date.now()}`,
+    const bubble: StoredAbnormalityBubble = {
+      id: `abnormality-${Date.now()}`,
       labId,
       description: formData.description,
       location: formData.location,
@@ -57,12 +57,12 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
       })
     };
 
-    saveThreatBubble(bubble);
+    saveAbnormalityBubble(bubble);
     
     if (onSuccess) {
       onSuccess();
     } else {
-      router.push(`/threat/${bubble.id}`);
+      router.push(`/abnormality/${bubble.id}`);
     }
   };
 
@@ -79,7 +79,7 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
           onChange={(e) => handleFieldChange('description', e.target.value)}
           rows={3}
           className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Describe the threat or situation..."
+          placeholder="Describe the abnormality or situation..."
         />
       </div>
 
@@ -135,7 +135,7 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
           className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          Select the date when the threat was detected
+          Select the date when the abnormality was detected
         </p>
       </div>
 
@@ -252,7 +252,7 @@ export default function ThreatBubbleForm({ labId, formData, onFormDataChange, on
           type="submit"
           className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Create Threat Bubble
+          Create Abnormality Bubble
         </button>
         <button
           type="button"

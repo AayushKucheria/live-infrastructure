@@ -4,7 +4,7 @@ import { getLabById } from '../lib/mockData';
 
 // Legacy interface - kept for backward compatibility
 // This component is replaced by PostFormalArtifactEditor
-interface ThreatBubbleFormData {
+interface AbnormalityBubbleFormData {
   description: string;
   location: string;
   detectionMethod: string;
@@ -19,14 +19,14 @@ interface ThreatBubbleFormData {
 import { formatRelativeTimeline } from '../lib/utils';
 
 interface PostFormalPreviewProps {
-  formData: ThreatBubbleFormData;
+  formData: AbnormalityBubbleFormData;
   labId: string;
 }
 
 export default function PostFormalPreview({ formData, labId }: PostFormalPreviewProps) {
   const lab = getLabById(labId);
 
-  // Apply privacy filtering logic (matching ThreatBubbleCard)
+  // Apply privacy filtering logic (matching AbnormalityBubbleCard)
   const canShowDetails = formData.privacyLevel === 'low';
   const canShowMediumDetails = formData.privacyLevel !== 'high';
 
@@ -60,7 +60,7 @@ export default function PostFormalPreview({ formData, labId }: PostFormalPreview
       <div className="h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
         <div className="text-center">
           <p className="text-sm">Preview will appear here</p>
-          <p className="text-xs mt-2">Start filling out the form to see how your threat bubble will appear to recipients</p>
+          <p className="text-xs mt-2">Start filling out the form to see how your abnormality bubble will appear to recipients</p>
         </div>
       </div>
     );
@@ -78,38 +78,30 @@ export default function PostFormalPreview({ formData, labId }: PostFormalPreview
           </span>
         </div>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          This is how recipients will see your threat bubble
+          This is how recipients will see your abnormality bubble
         </p>
       </div>
 
       {/* Document-style preview */}
       <div className="space-y-6">
-        {/* Header section */}
-        <div>
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-1">
-                {lab?.name || 'Unknown Lab'}
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {lab?.location} • {formData.detectionMethod || 'Detection method not specified'}
-              </p>
-            </div>
-            <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-zinc-600 dark:text-zinc-400">
-              {privacyLabels[formData.privacyLevel]}
-            </span>
-          </div>
-        </div>
-
-        {/* Description */}
+        {/* Primary: Abnormality Description */}
         {formData.description && (
-          <div>
-            <h4 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2 uppercase tracking-wide">
-              Summary
-            </h4>
-            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              {formData.description}
-            </p>
+          <div className="mb-4">
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 flex-1 leading-tight">
+                {formData.description}
+              </h3>
+              <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${urgencyColors[formData.urgency]}`}>
+                {formData.urgency.toUpperCase()}
+              </span>
+            </div>
+            
+            {/* Secondary: Lab name and location */}
+            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-3">
+              <span>{lab?.name || 'Unknown Lab'}</span>
+              <span>•</span>
+              <span>{lab?.location || 'Unknown Location'}</span>
+            </div>
           </div>
         )}
 
