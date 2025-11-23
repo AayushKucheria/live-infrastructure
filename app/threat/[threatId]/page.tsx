@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { getThreatBubbleById } from '../../lib/storage';
 import { MOCK_THREAT_BUBBLES, getLabById, ThreatBubble } from '../../lib/mockData';
 import { findRelevantThreatBubbles, getAllThreatBubbles } from '../../lib/matching';
@@ -12,11 +12,21 @@ import { getCurrentLab } from '../../lib/storage';
 export default function ThreatBubbleView() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const threatId = params.threatId as string;
   const [threatBubble, setThreatBubble] = useState<ThreatBubble | null>(null);
   const [relevantBubbles, setRelevantBubbles] = useState<ThreatBubble[]>([]);
   const [explanations, setExplanations] = useState<Record<string, string>>({});
   const [currentLabId, setCurrentLabId] = useState<string | null>(null);
+  const [matchExplanation, setMatchExplanation] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get explanation from URL if present
+    const explanation = searchParams.get('relevance_explanation');
+    if (explanation) {
+      setMatchExplanation(explanation);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // Get current lab
@@ -73,7 +83,7 @@ export default function ThreatBubbleView() {
     };
 
     fetchExplanations();
-  }, [threatId, router]);
+  }, [threatId, router, searchParams]);
 
   if (!threatBubble) {
     return null;
@@ -94,9 +104,14 @@ export default function ThreatBubbleView() {
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Threat Bubble */}
-          <div className="lg:col-span-2">
-            <ThreatBubbleCard bubble={threatBubble} showFullDetails />
+            {/* Main Threat Bubble */}
+            <div className="lg:col-span-2">
+              <ThreatBubbleCard 
+                bubble={threatBubble} 
+                showFullDetails 
+                matchExplanation={matchExplanation || undefined}
+                disableLink={true}
+              />
             
             {/* Communication Channel Button */}
             {!isOwnBubble && currentLabId && (
@@ -126,7 +141,7 @@ export default function ThreatBubbleView() {
                   {relevantBubbles.map((bubble) => (
                     <div key={bubble.id} className="border-b border-zinc-200 dark:border-zinc-700 pb-4 last:border-0 last:pb-0">
                       <Link
-                        href={`/threat/${bubble.id}`}
+                        href={`/threat/${bubble.id}${explanations[bubble.id] ? `?relevance_explanation=${encodeURIComponent(explanations[bubble.id])}` : ''}`}
                         className="block hover:opacity-80 transition-opacity"
                       >
                         <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-50 mb-1">

@@ -1,19 +1,21 @@
 'use client';
 
+import Link from 'next/link';
 import { ThreatBubble } from '../lib/mockData';
 import { StoredThreatBubble } from '../lib/storage';
 import { getLabById } from '../lib/mockData';
 import { formatRelativeTimeline } from '../lib/utils';
-import Link from 'next/link';
 
 type ThreatBubbleUnion = ThreatBubble | StoredThreatBubble;
 
 interface ThreatBubbleCardProps {
   bubble: ThreatBubbleUnion;
   showFullDetails?: boolean;
+  matchExplanation?: string;
+  disableLink?: boolean;
 }
 
-export default function ThreatBubbleCard({ bubble, showFullDetails = false }: ThreatBubbleCardProps) {
+export default function ThreatBubbleCard({ bubble, showFullDetails = false, matchExplanation, disableLink = false }: ThreatBubbleCardProps) {
   const lab = getLabById(bubble.labId);
   
   const urgencyColors = {
@@ -32,8 +34,8 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false }: Th
   const canShowDetails = bubble.privacyLevel === 'low' || showFullDetails;
   const canShowMediumDetails = bubble.privacyLevel !== 'high' || showFullDetails;
 
-  return (
-    <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-md transition-all">
+  const content = (
+    <div className={`bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-md transition-all ${!disableLink ? 'cursor-pointer' : ''}`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -56,6 +58,21 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false }: Th
       <p className="text-zinc-700 dark:text-zinc-300 mb-4">
         {bubble.description}
       </p>
+
+      {matchExplanation && (
+        <div className="mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded border border-indigo-100 dark:border-indigo-800/30 animate-in fade-in slide-in-from-top-1">
+          <div className="flex items-start gap-2">
+            <div>
+              <h4 className="text-xs font-semibold text-indigo-800 dark:text-indigo-300 uppercase tracking-wide mb-1">
+                Why this might be relevant?
+              </h4>
+              <p className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed">
+                {matchExplanation}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2 mb-4 text-sm">
         <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
@@ -89,14 +106,18 @@ export default function ThreatBubbleCard({ bubble, showFullDetails = false }: Th
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
           {new Date(bubble.createdAt).toLocaleDateString()}
         </span>
-        <Link
-          href={`/threat/${bubble.id}`}
-          className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline"
-        >
-          View Details →
-        </Link>
       </div>
     </div>
+  );
+
+  if (disableLink) {
+    return content;
+  }
+
+  return (
+    <Link href={`/threat/${bubble.id}`}>
+      {content}
+    </Link>
   );
 }
 
