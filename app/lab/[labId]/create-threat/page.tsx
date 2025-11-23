@@ -7,6 +7,7 @@ import { getCurrentLab, saveThreatBubble, StoredThreatBubble, ClarificationAnnot
 import FreeFormThreatInput from '../../../components/FreeFormThreatInput';
 import PostFormalArtifactEditor from '../../../components/PostFormalArtifactEditor';
 import AISuggestionBubbles from '../../../components/AISuggestionBubbles';
+import { PRIMARY_LAB_ID } from '../../../lib/constants';
 
 interface StructuredThreatData {
   description: string;
@@ -44,16 +45,21 @@ export default function CreateThreatBubble() {
   const [clarifications, setClarifications] = useState<ClarificationAnnotation[]>([]);
 
   useEffect(() => {
+    if (labId !== PRIMARY_LAB_ID) {
+      router.replace('/');
+      return;
+    }
+
     // Verify user is joined as this lab
     const currentLab = getCurrentLab();
-    if (currentLab !== labId) {
-      router.push('/');
+    if (currentLab !== PRIMARY_LAB_ID) {
+      router.replace('/');
       return;
     }
 
     const labData = getLabById(labId);
     if (!labData) {
-      router.push('/');
+      router.replace('/');
       return;
     }
 

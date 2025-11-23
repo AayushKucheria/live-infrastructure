@@ -3,11 +3,15 @@
 import { MOCK_LABS, Lab } from '../lib/mockData';
 import { useRouter } from 'next/navigation';
 import { setCurrentLab } from '../lib/storage';
+import { PRIMARY_LAB_ID } from '../lib/constants';
 
 export default function LabSelector() {
   const router = useRouter();
 
   const handleSelectLab = (lab: Lab) => {
+    if (lab.id !== PRIMARY_LAB_ID) {
+      return;
+    }
     setCurrentLab(lab.id);
     router.push(`/lab/${lab.id}`);
   };
@@ -25,11 +29,20 @@ export default function LabSelector() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MOCK_LABS.map((lab) => (
+          {MOCK_LABS.map((lab) => {
+            const isAllowedLab = lab.id === PRIMARY_LAB_ID;
+            return (
             <button
               key={lab.id}
+              type="button"
               onClick={() => handleSelectLab(lab)}
-              className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 text-left border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 group"
+              disabled={!isAllowedLab}
+              aria-disabled={!isAllowedLab}
+              className={`bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm text-left border transition-all duration-200 ${
+                isAllowedLab
+                  ? 'hover:shadow-md border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 group'
+                  : 'opacity-60 border-dashed border-zinc-200 dark:border-zinc-700 cursor-not-allowed'
+              }`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -47,11 +60,12 @@ export default function LabSelector() {
                   {lab.type}
                 </span>
                 <span className="text-sm text-blue-600 dark:text-blue-400 font-medium group-hover:underline">
-                  Join →
+                  {isAllowedLab ? 'Join →' : 'Unavailable'}
                 </span>
               </div>
             </button>
-          ))}
+          );
+          })}
         </div>
       </div>
     </div>
